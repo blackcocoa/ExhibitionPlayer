@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es6",
+        "sourceMap": true,
+        "resolveJsonModule": true,
+        "types": ["node"]
+    },
+    "include": ["src/**/*", "../class/*.ts"],
+    "exclude": ["node_modules"]
+}

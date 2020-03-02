@@ -1,0 +1,24 @@
+{
+    "scripts": {
+        "dev": "next -p 3562",
+        "build": "next build",
+        "start": "next start"
+    },
+    "dependencies": {
+        "firebase": "^7.9.3",
+        "next": "^9.2.2",
+        "react": "^16.13.0",
+        "react-dom": "^16.13.0",
+        "react-player": "^1.15.2",
+        "soundcloud-v2-api": "^0.1.4"
+    },
+    "devDependencies": {
+        "@types/node": "^13.7.7",
+        "@types/react": "^16.9.23",
+        "@zeit/next-sass": "^1.0.1",
+        "eslint-plugin-react-hooks": "^2.5.0",
+        "node-sass": "^4.13.1",
+        "ts-loader": "^6.2.1",
+        "typescript": "^3.8.3"
+    }
+}

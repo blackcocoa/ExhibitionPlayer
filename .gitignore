@@ -1,0 +1,10 @@
+node_modules/
+firestore-debug.log
+serviceAccountKey.json
+
+scraper/dest/**/*
+scraper/.env
+
+web/.next/
+web/.env
+web/next.config.js
