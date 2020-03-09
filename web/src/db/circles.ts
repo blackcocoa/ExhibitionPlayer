@@ -1,7 +1,7 @@
 import firebase, { firestore } from 'firebase/app'
 import 'firebase/firestore'
-import { Circle } from '../../shared/Circle'
-import { Exhibition } from '../../shared/Exhibition'
+import { Circle } from '../../../shared/Circle'
+import { Exhibition } from '../../../shared/Exhibition'
 
 export class CircleResource {
     db: firestore.Firestore

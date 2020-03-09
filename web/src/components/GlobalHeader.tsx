@@ -1,7 +1,4 @@
-import Link from 'next/link'
-import { NextPage } from 'next'
 import React, { useState, useCallback, Component } from 'react'
-import '../styles/style.scss'
 
 interface Props {}
 

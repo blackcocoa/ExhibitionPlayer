@@ -6,5 +6,5 @@ scraper/dest/**/*
 scraper/.env
 
 web/.next/
-web/.env
 web/next.config.js
+web/dist

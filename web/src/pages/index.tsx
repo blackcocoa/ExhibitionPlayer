@@ -3,13 +3,11 @@ import { NextPage } from 'next'
 import React, { useState, useCallback, useContext } from 'react'
 import { Database } from '../db/index'
 import { CircleResource } from '../db/circles'
-import { Exhibition } from '../../shared/Exhibition'
-import { Circle } from '../../shared/Circle'
+import { Exhibition } from '../../../shared/Exhibition'
+import { Circle } from '../../../shared/Circle'
 import { ExhibitionResource } from '../db/exhibitions'
 import { GlobalHeader } from '../components/GlobalHeader'
-import { Audition } from '../components/Audition'
 import { Context } from '../store'
-import '../styles/style.scss'
 
 interface Props {
     exhibitions: Exhibition[]
@@ -31,7 +29,7 @@ const Index: NextPage<Props> = ({ exhibitions }) => {
     const { store, dispatch } = useContext(Context)
 
     return (
-        <div>
+        <main>
             <GlobalHeader />
             <h2>イベントを選択</h2>
             <ul>
@@ -48,6 +46,11 @@ const Index: NextPage<Props> = ({ exhibitions }) => {
             <ul className="Circles">
                 {circles.map((circle, index) => {
                     const media = circle.media || undefined
+                    const twitter = circle.twitterId ? (
+                        <a href={`https://twitter.com/${circle.twitterId}`} target="_blank">
+                            Twitter
+                        </a>
+                    ) : null
                     const audition = media ? (
                         <button onClick={() => dispatch({ type: 'setMedia', value: media })}>SET</button>
                     ) : (
@@ -61,9 +64,7 @@ const Index: NextPage<Props> = ({ exhibitions }) => {
                                 <p>
                                     {circle.description}
                                     <br />
-                                    <a href={`https://twitter.com/${circle.twitterId}`} target="_blank">
-                                        Twitter
-                                    </a>
+                                    {twitter}
                                 </p>
                                 {audition}
                             </div>
@@ -72,6 +73,9 @@ const Index: NextPage<Props> = ({ exhibitions }) => {
                 })}
             </ul>
             <style jsx>{`
+                main {
+                    padding: 180px 20px 40px;
+                }
                 h2 {
                     margin-bottom: 20px;
                 }
@@ -86,7 +90,7 @@ const Index: NextPage<Props> = ({ exhibitions }) => {
                     border: 1px solid #666;
                     border-radius: 2px;
                     margin-bottom: 20px;
-                    flex: 0 1 30%;
+                    flex: 0 1 31%;
                     padding: 20px;
                     text-align: left;
                 }
@@ -95,9 +99,19 @@ const Index: NextPage<Props> = ({ exhibitions }) => {
                     margin-bottom: 10px;
                 }
                 .Circles p {
+                    word-break: break-all;
+                }
+                @media screen and (max-width: 640px) {
+                    main {
+                        padding-left: 10px;
+                        padding-right: 10px;
+                    }
+                    .Circles-item {
+                        flex-basis: 100%;
+                    }
                 }
             `}</style>
-        </div>
+        </main>
     )
 }
 
