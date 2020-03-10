@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { NextPage } from 'next'
-import { Media, MediaService } from '../../../shared/Media'
+import { Media, MediaService } from '../../../../shared/Media'
 import React, { useEffect, useState } from 'react'
 import YouTube, { Options, PlayerVars } from 'react-youtube'
 const Soundcloud = require('soundcloud-v2-api')

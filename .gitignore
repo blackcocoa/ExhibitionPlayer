@@ -1,3 +1,4 @@
+.DS_Store
 node_modules/
 firestore-debug.log
 serviceAccountKey.json
@@ -8,3 +9,6 @@ scraper/.env
 web/.next/
 web/next.config.js
 web/dist
+
+# Firebase cache
+.firebase

@@ -1,20 +1,16 @@
 {
-  "firestore": {
-    "rules": "firestore.rules",
-    "indexes": "firestore.indexes.json"
-  },
-  "hosting": {
-    "public": "public",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ]
-  },
-  "functions": {
-    "predeploy": [
-      "npm --prefix \"$RESOURCE_DIR\" run lint",
-      "npm --prefix \"$RESOURCE_DIR\" run build"
-    ]
-  }
+    "hosting": {
+        "public": "dist/public",
+        "predeploy": "next build 'src/app/'",
+        "rewrites": [
+            {
+                "source": "**/**",
+                "function": "next"
+            }
+        ]
+    },
+    "functions": {
+        "source": "dist/functions",
+        "predeploy": "babel 'src/functions' --out-dir 'dist/functions'"
+    }
 }

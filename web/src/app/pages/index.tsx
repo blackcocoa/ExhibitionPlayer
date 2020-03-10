@@ -1,12 +1,13 @@
+import * as React from 'react'
+import App from '../components/App'
 import Link from 'next/link'
 import { NextPage } from 'next'
-import React, { useState, useCallback, useContext } from 'react'
+import { useState, useCallback, useContext } from 'react'
 import { Database } from '../db/index'
 import { CircleResource } from '../db/circles'
-import { Exhibition } from '../../../shared/Exhibition'
-import { Circle } from '../../../shared/Circle'
+import { Exhibition } from '../../../../shared/Exhibition'
+import { Circle } from '../../../../shared/Circle'
 import { ExhibitionResource } from '../db/exhibitions'
-import { GlobalHeader } from '../components/GlobalHeader'
 import { Context } from '../store'
 
 interface Props {
@@ -29,8 +30,7 @@ const Index: NextPage<Props> = ({ exhibitions }) => {
     const { store, dispatch } = useContext(Context)
 
     return (
-        <main>
-            <GlobalHeader />
+        <App>
             <h2>イベントを選択</h2>
             <ul>
                 {exhibitions.map((exhibition, index) => {
@@ -73,9 +73,6 @@ const Index: NextPage<Props> = ({ exhibitions }) => {
                 })}
             </ul>
             <style jsx>{`
-                main {
-                    padding: 180px 20px 40px;
-                }
                 h2 {
                     margin-bottom: 20px;
                 }
@@ -111,7 +108,7 @@ const Index: NextPage<Props> = ({ exhibitions }) => {
                     }
                 }
             `}</style>
-        </main>
+        </App>
     )
 }
 

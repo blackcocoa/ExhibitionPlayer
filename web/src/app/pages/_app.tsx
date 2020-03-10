@@ -2,7 +2,7 @@ import App from 'next/app'
 import React, { useContext, useReducer, useEffect } from 'react'
 import { Audition } from '../components/Audition'
 import { Context, reducer, initialState } from '../store'
-import '../../styles/style.scss'
+import '../styles/style.scss'
 
 interface Props {
     Component: any
@@ -11,6 +11,7 @@ interface Props {
 
 function MyApp({ Component, pageProps }: Props) {
     const [store, dispatch] = useReducer(reducer, initialState)
+
     useEffect(() => {
         const scriptId = 'script-soundcloud-sdk'
         if (document.getElementById(scriptId)) return
