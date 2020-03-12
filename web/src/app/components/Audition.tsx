@@ -1,17 +1,19 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, FC } from 'react'
 import ReactPlayer from 'react-player'
 import { Media, MediaService } from '../../../../shared/Media'
 import { AppContext } from '../store'
 
-const Audition = () => {
-    const [nextTimer, setNextTimer] = useState<NodeJS.Timeout | null>(null)
+type Props = {}
+
+const Audition: FC<Props> = () => {
+    const [nextTimer, setNextTimer] = useState<number | null>(null)
     const { store, dispatch } = useContext(AppContext)
     const queue = store.playQueue
     const AUDITION_DURATION = 3000
+
     const onReady = () => {
-        console.log('準備万端でござる')
         setNextTimer(
-            setTimeout(() => {
+            window.setTimeout(() => {
                 dispatch({ type: 'trackNext' })
             }, AUDITION_DURATION)
         )
