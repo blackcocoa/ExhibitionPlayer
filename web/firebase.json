@@ -1,7 +1,7 @@
 {
     "hosting": {
         "public": "dist/public",
-        "predeploy": "next build 'src/app/'",
+        "predeploy": "cpx \"src/public/**/*.*\" \"dist/public\" -C && cpx \"*{package.json,package-lock.json,yarn.lock}\" \"dist/functions\" -C && next build 'src/app/'",
         "rewrites": [
             {
                 "source": "**/**",
