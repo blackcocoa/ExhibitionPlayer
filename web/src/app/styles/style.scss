@@ -1,16 +1,7 @@
 @import 'init';
 
-body {
-    background-color: #333;
-    color: #fff;
-}
-
 main {
     padding: 180px 20px 40px;
-}
-
-a {
-    color: #38d0ff;
 }
 
 @media screen and (max-width: 640px) {
@@ -18,4 +9,11 @@ a {
         padding-left: 10px;
         padding-right: 10px;
     }
+}
+
+a:link,
+a:visited,
+a:hover,
+a:active {
+    color: #22aaff;
 }

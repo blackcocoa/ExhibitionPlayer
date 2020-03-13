@@ -4,6 +4,7 @@ import { FC } from 'react'
 type Props = {
     circle: Circle
     index: number
+    active: boolean
     onClickQueue: Function
 }
 
@@ -16,7 +17,7 @@ export const CircleCard: FC<Props> = props => {
     ) : null
 
     return (
-        <li>
+        <li className={props.active ? 'active' : ''}>
             <h3>{circle.name}</h3>
             <div>
                 <p>
@@ -43,9 +44,29 @@ export const CircleCard: FC<Props> = props => {
                 p {
                     word-break: break-all;
                 }
+                .active {
+                    animation: activeman 3.6s linear infinite;
+                }
                 @media screen and (max-width: 640px) {
                     li {
                         flex-basis: 100%;
+                    }
+                }
+                @keyframes activeman {
+                    0% {
+                        background-color: rgba(255, 255, 255, 0);
+                    }
+                    42% {
+                        background-color: rgba(255, 255, 255, 0.08);
+                    }
+                    50% {
+                        background-color: rgba(255, 255, 255, 0.2);
+                    }
+                    58% {
+                        background-color: rgba(255, 255, 255, 0.08);
+                    }
+                    100% {
+                        background-color: rgba(255, 255, 255, 0);
                     }
                 }
             `}</style>

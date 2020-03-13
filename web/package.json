@@ -13,6 +13,8 @@
         "install-deps": "cd \"dist/functions\" && yarn"
     },
     "dependencies": {
+        "@material-ui/core": "^4.9.5",
+        "@material-ui/icons": "^4.9.1",
         "axios": "^0.19.2",
         "firebase": "^7.10.0",
         "firebase-admin": "^8.9.2",

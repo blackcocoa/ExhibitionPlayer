@@ -7,6 +7,7 @@ module.exports = withSass({
         FIREBASE_APP_ID: '1:749064670057:web:de74f3411864b9695f4bf8',
         FIREBASE_API_KEY: 'AIzaSyDav5vffiV6v9JovbeBp7LOpPbNggkJvv0',
         SOUNDCLOUD_CLIENT_ID: 'bzhrcLdRzbS6QiVRq8EvMSoMM6p1KhL5',
+        DEFAULT_AUDITION_DURATION: 5,
     },
     webpack: (config, options) => {
         config.module.rules.push({

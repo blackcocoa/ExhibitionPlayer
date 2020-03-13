@@ -41,7 +41,7 @@ const Index: NextPage<Props> = ({ exhibitions }) => {
                     await getStreamUrl(media.id).then(result =>
                         dispatch({
                             type: 'mediaPush',
-                            payload: { id: result.data.url, type: MediaService.SoundCloud },
+                            payload: { id: result.data.id, url: result.data.url, type: MediaService.SoundCloud },
                         })
                     )
                 break
@@ -80,7 +80,15 @@ const Index: NextPage<Props> = ({ exhibitions }) => {
             <h2>サークル一覧</h2>
             <ul className="Circles">
                 {circles.map((circle, index) => {
-                    return <CircleCard circle={circle} onClickQueue={onClickQueue} index={index} key={index} />
+                    return (
+                        <CircleCard
+                            circle={circle}
+                            onClickQueue={onClickQueue}
+                            active={circle.media && store.playQueue.length && store.playQueue[0].id === circle.media.id}
+                            index={index}
+                            key={index}
+                        />
+                    )
                 })}
             </ul>
             <style jsx>{`

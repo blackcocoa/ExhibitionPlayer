@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const initialState = { playQueue: [] }
+export const initialState = { playQueue: [], auditionDuration: 5000 }
 
 export const reducer = (state: any, action: any) => {
     switch (action.type) {
@@ -19,6 +19,11 @@ export const reducer = (state: any, action: any) => {
             const queue = [...state.playQueue]
             if (queue.length) queue.shift()
             return { ...state, playQueue: queue }
+        }
+        case 'updateSetting': {
+            let s = { ...state }
+            if (action.payload.auditionDuration) s.auditionDuration = parseInt(action.payload.auditionDuration)
+            return s
         }
         default:
             return { ...state }

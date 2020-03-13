@@ -23,7 +23,7 @@ exports.getStreamUrl = functions.region('asia-northeast1').https.onCall(async (d
         const transcoding = response.data.media.transcodings.filter(t => t.format.protocol === 'progressive')
         if (!transcoding) return res.json({ url: null })
         const streamResponse = await axios.get(`${transcoding[0].url}?client_id=${clientId}`)
-        return { url: streamResponse.data.url }
+        return { url: streamResponse.data.url, id: data.trackId }
     } catch (error) {
         throw new HttpsError('INTERNAL', `Error while getting ${data.trackId}`, { trackId: data.trackId })
     }

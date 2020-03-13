@@ -9,13 +9,12 @@ const Audition: FC<Props> = () => {
     const [nextTimer, setNextTimer] = useState<number | null>(null)
     const { store, dispatch } = useContext(AppContext)
     const queue = store.playQueue
-    const AUDITION_DURATION = 5000
 
     const onReady = () => {
         setNextTimer(
             window.setTimeout(() => {
                 dispatch({ type: 'queueNext' })
-            }, AUDITION_DURATION)
+            }, store.auditionDuration)
         )
     }
 
@@ -28,7 +27,7 @@ const Audition: FC<Props> = () => {
     if (queue.length) {
         switch (queue[0].type) {
             case MediaService.SoundCloud:
-                src = queue[0].id
+                src = queue[0].url
                 break
             case MediaService.YouTube:
                 src = `https://www.youtube.com/watch?v=${queue[0].id}`
@@ -58,7 +57,7 @@ const Audition: FC<Props> = () => {
             <style jsx>{`
                 .Player {
                     position: fixed;
-                    top: 0;
+                    top: 48px;
                     width: 100%;
                     height: 180px;
                 }
