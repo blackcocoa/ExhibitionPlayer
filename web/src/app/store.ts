@@ -12,13 +12,16 @@ export const reducer = (state: any, action: any) => {
             queue.push(action.payload)
             return { ...state, playQueue: queue }
         }
-        case 'trackNext': {
+        case 'queueClear': {
+            return { ...state, playQueue: [] }
+        }
+        case 'queueNext': {
             const queue = [...state.playQueue]
             if (queue.length) queue.shift()
             return { ...state, playQueue: queue }
         }
         default:
-            return state
+            return { ...state }
     }
 }
 

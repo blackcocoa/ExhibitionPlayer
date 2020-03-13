@@ -24,40 +24,21 @@ const Index: NextPage<Props> = ({ exhibitions }) => {
 
     const fetchCircles = async (exhibition: Exhibition) => {
         const circleResource = new CircleResource(db.getInstance(), exhibition)
-        const circles = await circleResource.fetch()
-        setCircles(circles)
+        const c = await circleResource.fetch()
+        setCircles(c)
     }
     const onClickCircle = (exhibition: Exhibition) => (event: any) => {
         fetchCircles(exhibition)
     }
 
-    const onClickSetMedia = useCallback((media: Media) => {
-        switch (media.type) {
-            case MediaService.YouTube:
-                dispatch({ type: 'mediaSet', payload: media })
-                break
-            case MediaService.SoundCloud:
-                if (media.id)
-                    getStreamUrl(media.id).then(result =>
-                        dispatch({
-                            type: 'mediaSet',
-                            payload: { id: result.data.url, type: MediaService.SoundCloud },
-                        })
-                    )
-                break
-            default:
-                break
-        }
-    }, [])
-
-    const onClickQueueMedia = useCallback((media: Media) => {
+    async function queueMedia(media: Media) {
         switch (media.type) {
             case MediaService.YouTube:
                 dispatch({ type: 'mediaPush', payload: media })
                 break
             case MediaService.SoundCloud:
                 if (media.id)
-                    getStreamUrl(media.id).then(result =>
+                    await getStreamUrl(media.id).then(result =>
                         dispatch({
                             type: 'mediaPush',
                             payload: { id: result.data.url, type: MediaService.SoundCloud },
@@ -67,7 +48,21 @@ const Index: NextPage<Props> = ({ exhibitions }) => {
             default:
                 break
         }
-    }, [])
+    }
+
+    const onClickQueue = useCallback(
+        async (index: number) => {
+            dispatch({ type: 'queueClear' })
+            for (let circle of circles.slice(index)) {
+                try {
+                    if (circle.media) await queueMedia(circle.media)
+                } catch (error) {
+                    console.error('API error inresolving stream URL')
+                }
+            }
+        },
+        [circles]
+    )
 
     return (
         <App>
@@ -85,14 +80,7 @@ const Index: NextPage<Props> = ({ exhibitions }) => {
             <h2>サークル一覧</h2>
             <ul className="Circles">
                 {circles.map((circle, index) => {
-                    return (
-                        <CircleCard
-                            circle={circle}
-                            onClickSetMedia={onClickSetMedia}
-                            onClickQueueMedia={onClickQueueMedia}
-                            key={index}
-                        />
-                    )
+                    return <CircleCard circle={circle} onClickQueue={onClickQueue} index={index} key={index} />
                 })}
             </ul>
             <style jsx>{`

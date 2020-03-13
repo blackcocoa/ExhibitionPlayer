@@ -3,13 +3,12 @@ import { FC } from 'react'
 
 type Props = {
     circle: Circle
-    onClickSetMedia: Function
-    onClickQueueMedia: Function
+    index: number
+    onClickQueue: Function
 }
 
 export const CircleCard: FC<Props> = props => {
     const circle = props.circle
-    const media = circle.media || undefined
     const twitter = circle.twitterId ? (
         <a href={`https://twitter.com/${circle.twitterId}`} target="_blank">
             Twitter
@@ -25,8 +24,7 @@ export const CircleCard: FC<Props> = props => {
                     <br />
                     {twitter}
                 </p>
-                {media ? <button onClick={() => props.onClickSetMedia(media)}>SET</button> : <div></div>}
-                {media ? <button onClick={() => props.onClickQueueMedia(media)}>QUUE</button> : <div></div>}
+                {circle.media && <button onClick={() => props.onClickQueue(props.index)}>ここから再生</button>}
             </div>
             <style jsx>{`
                 li {
