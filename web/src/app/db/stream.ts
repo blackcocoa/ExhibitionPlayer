@@ -11,7 +11,7 @@ export const getStreamUrl = async (trackId: string) => {
     if (!firebase.apps.length) firebase.initializeApp(config)
     const getStreamUrl = firebase
         .app()
-        .functions('asia-northeast1')
+        .functions('us-central1')
         .httpsCallable('getStreamUrl')
 
     return await getStreamUrl({ trackId })

@@ -10,12 +10,12 @@ var app = next({
 })
 var handle = app.getRequestHandler()
 
-exports.next = functions.region('asia-northeast1').https.onRequest((req, res) => {
+exports.next = functions.region('us-central1').https.onRequest((req, res) => {
     console.log('File: ' + req.originalUrl) // log the page.js file that is being requested
     return app.prepare().then(() => handle(req, res))
 })
 
-exports.getStreamUrl = functions.region('asia-northeast1').https.onCall(async (data, context) => {
+exports.getStreamUrl = functions.region('us-central1').https.onCall(async (data, context) => {
     const clientId = 'bzhrcLdRzbS6QiVRq8EvMSoMM6p1KhL5'
 
     try {

@@ -1,9 +1,12 @@
 import React from 'react'
 
-export const initialState = { playQueue: [], auditionDuration: 5000 }
+export const initialState = { activeExhibition: null, playQueue: [], auditionDuration: 5000 }
 
 export const reducer = (state: any, action: any) => {
     switch (action.type) {
+        case 'exhibitionSet': {
+            return { ...state, activeExhibition: action.payload }
+        }
         case 'mediaSet': {
             return { ...state, playQueue: [action.payload] }
         }

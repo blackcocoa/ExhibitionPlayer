@@ -1,5 +1,6 @@
 import { Circle } from '../../../../shared/Circle'
 import { FC } from 'react'
+import TwitterIcon from '@material-ui/icons/Twitter'
 
 type Props = {
     circle: Circle
@@ -10,21 +11,21 @@ type Props = {
 
 export const CircleCard: FC<Props> = props => {
     const circle = props.circle
-    const twitter = circle.twitterId ? (
-        <a href={`https://twitter.com/${circle.twitterId}`} target="_blank">
-            Twitter
-        </a>
-    ) : null
 
     return (
         <li className={props.active ? 'active' : ''}>
             <h3>{circle.name}</h3>
             <div>
-                <p>
-                    {circle.description}
-                    <br />
-                    {twitter}
-                </p>
+                <p>{circle.description}</p>
+                {circle.twitterId && (
+                    <i className="twitter">
+                        <TwitterIcon>
+                            <a href={`https://twitter.com/${circle.twitterId}`} target="_blank">
+                                Twitter
+                            </a>
+                        </TwitterIcon>
+                    </i>
+                )}
                 {circle.media && <button onClick={() => props.onClickQueue(props.index)}>ここから再生</button>}
             </div>
             <style jsx>{`
@@ -33,8 +34,8 @@ export const CircleCard: FC<Props> = props => {
                     border: 1px solid #666;
                     border-radius: 2px;
                     margin-bottom: 20px;
-                    flex: 0 1 31%;
                     padding: 20px;
+                    position: relative;
                     text-align: left;
                 }
                 h3 {
@@ -46,6 +47,12 @@ export const CircleCard: FC<Props> = props => {
                 }
                 .active {
                     animation: activeman 3.6s linear infinite;
+                }
+                .twitter {
+                    font-size: 28px;
+                    position: absolute;
+                    bottom: 10px;
+                    right: 20px;
                 }
                 @media screen and (max-width: 640px) {
                     li {
