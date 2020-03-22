@@ -12,7 +12,7 @@ export class Exhibition {
         return {
             id: this.id,
             name: this.name,
-            slug: this.name,
+            slug: this.slug,
         }
     }
 }

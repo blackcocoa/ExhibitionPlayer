@@ -19,22 +19,14 @@ interface Props {
 }
 
 const db = new Database()
+const circleResource = new CircleResource(db.getInstance())
 
 const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
-    const exhibition = new Exhibition(id, name, slug)
     const [circles, setCircles] = useState<Circle[]>([])
-    const [page, setPage] = useState<number>(0)
     const { store, dispatch } = useContext(AppContext)
 
-    const fetchCircles = async () => {
-        const circleResource = new CircleResource(db.getInstance(), exhibition)
-        const c = await circleResource.next()
-        if (!c) {
-            console.log('End')
-            return
-        }
-        setCircles(c)
-    }
+    const exhibition = new Exhibition(id, name, slug)
+    circleResource.setExhibition(exhibition)
 
     async function queueMedia(media: Media) {
         switch (media.type) {
@@ -69,14 +61,30 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
         [circles]
     )
 
+    const onClickFetch = useCallback(async () => {
+        const c = await circleResource.fetch()
+        if (!c.length) {
+            console.log('End')
+            return
+        }
+        setCircles(c)
+    }, [])
+
     const onClickNext = useCallback(async () => {
-        await fetchCircles()
-        setPage(page + 1)
-    }, [page])
+        const c = await circleResource.next()
+        if (!c.length) {
+            console.log('End')
+            return
+        }
+        setCircles(circles.concat(c))
+    }, [circles])
 
     return (
         <App>
             <h1>{exhibition.name}</h1>
+
+            <button onClick={() => onClickFetch()}>サークルとる</button>
+
             <h2>サークル一覧</h2>
             <ul className="Circles">
                 {circles.map((circle, index) => {
@@ -91,6 +99,7 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
                     )
                 })}
             </ul>
+
             <button onClick={() => onClickNext()}>Next</button>
 
             <style jsx>{`

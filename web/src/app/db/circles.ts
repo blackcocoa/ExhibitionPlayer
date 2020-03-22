@@ -5,47 +5,57 @@ import { Exhibition } from '../../../../shared/Exhibition'
 
 export class CircleResource {
     db: firestore.Firestore
-    collection: firestore.CollectionReference
-    exhibition: Exhibition
+    collection: firestore.CollectionReference | undefined
+    exhibition: Exhibition | undefined
     limit: number
-    last: firestore.DocumentSnapshot | null
+    last: { id: string; data: firestore.DocumentData } | null
 
-    constructor(db: firestore.Firestore, exhibition: Exhibition) {
+    constructor(db: firestore.Firestore) {
         this.db = db
+        this.limit = (process.env.CIRCLE_FETCH_LIMIT as unknown) as number
+        this.last = null
+    }
+
+    private async _fetch() {
+        if (!this.exhibition || !this.collection) {
+            throw new Error('Exhibition not set')
+        }
+        let doc = this.collection.orderBy('name', 'asc').orderBy(firebase.firestore.FieldPath.documentId())
+        if (this.last) {
+            const lastCircle = this.last.data as Circle
+            doc = doc.startAfter(lastCircle.name, this.last.id)
+        }
+        const snapshot = await doc.limit(this.limit).get()
+
+        if (snapshot.empty) return []
+
+        this.last = {
+            id: snapshot.docs[snapshot.docs.length - 1].id,
+            data: snapshot.docs[snapshot.docs.length - 1].data(),
+        }
+
+        let circles: Circle[] = []
+        snapshot.forEach(doc => {
+            circles.push(<Circle>doc.data())
+        })
+
+        return circles
+    }
+
+    setExhibition(exhibition: Exhibition) {
         this.exhibition = exhibition
         this.collection = this.db
             .collection('exhibitions')
             .doc(this.exhibition.id)
             .collection('circles')
-        this.limit = (process.env.CIRCLE_FETCH_LIMIT as unknown) as number
+    }
+
+    async fetch(): Promise<Circle[]> {
         this.last = null
+        return this._fetch()
     }
 
-    async fetch(page: number = 0) {
-        const snapshot = await this.collection
-            .orderBy('name', 'asc')
-            .limit(this.limit)
-            .get()
-
-        this.last = snapshot.docs[snapshot.docs.length - 1]
-        let circles: Circle[] = []
-        snapshot.forEach(doc => {
-            console.log(doc.data())
-            circles.push(<Circle>doc.data())
-        })
-        return circles
-    }
-
-    async next() {
-        if (!this.last) return await this.fetch()
-
-        const lastData = this.last.data()
-        if (!lastData) return null
-        //TODO is name unique?
-        const snapshot = await this.collection
-            .orderBy('name', 'asc')
-            .startAfter(lastData.name)
-            .limit(this.limit)
-            .get()
+    async next(): Promise<Circle[]> {
+        return this._fetch()
     }
 }
