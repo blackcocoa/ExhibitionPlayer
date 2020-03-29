@@ -6,7 +6,9 @@ import { Exhibition } from '../../../../shared/Exhibition'
 export class CircleResource {
     db: firestore.Firestore
     collection: firestore.CollectionReference | undefined
+    query: firestore.Query | undefined
     exhibition: Exhibition | undefined
+    filterFields: string[] // To avoid firebase errors if where and orderBy are same
     limit: number
     last: { id: string; data: firestore.DocumentData } | null
 
@@ -14,13 +16,22 @@ export class CircleResource {
         this.db = db
         this.limit = (process.env.CIRCLE_FETCH_LIMIT as unknown) as number
         this.last = null
+        this.filterFields = []
     }
 
     private async _fetch() {
         if (!this.exhibition || !this.collection) {
             throw new Error('Exhibition not set')
         }
-        let doc = this.collection.orderBy('name', 'asc').orderBy(firebase.firestore.FieldPath.documentId())
+        if (!this.query) {
+            this.query = this.collection
+        }
+
+        let doc = this.query
+
+        if (!this.filterFields.find(f => f === 'booth.area')) doc = doc.orderBy('booth.area', 'asc')
+        doc = doc.orderBy('booth.number', 'asc').orderBy(firebase.firestore.FieldPath.documentId())
+
         if (this.last) {
             const lastCircle = this.last.data as Circle
             doc = doc.startAfter(lastCircle.name, this.last.id)
@@ -48,6 +59,17 @@ export class CircleResource {
             .collection('exhibitions')
             .doc(this.exhibition.id)
             .collection('circles')
+    }
+
+    addFilter(field: string, operator: string, value: string): void {
+        if (!this.collection) throw new Error('Exhibition not set')
+        this.query = this.collection.where(field, operator as firestore.WhereFilterOp, value)
+        this.filterFields.push(field)
+    }
+
+    clearFilter(): void {
+        this.query = this.collection
+        this.filterFields = []
     }
 
     async fetch(): Promise<Circle[]> {

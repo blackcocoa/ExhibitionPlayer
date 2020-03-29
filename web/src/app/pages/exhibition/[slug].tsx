@@ -23,10 +23,36 @@ const circleResource = new CircleResource(db.getInstance())
 
 const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
     const [circles, setCircles] = useState<Circle[]>([])
+    const [isPlaying, setIsPlaying] = useState<boolean>(false)
+    const [isFetching, setIsFetching] = useState<boolean>(false)
     const { store, dispatch } = useContext(AppContext)
 
     const exhibition = new Exhibition(id, name, slug)
     circleResource.setExhibition(exhibition)
+
+    useEffect(() => {
+        if (isPlaying && !isFetching && store.playQueue.length <= 2) getNextCircle()
+    }, [isPlaying, isFetching, store])
+
+    const getNextCircle = async () => {
+        const nextCircles = await circleResource.next()
+        if (!nextCircles.length) {
+            console.log('End')
+            return
+        }
+        if (isPlaying) {
+            setIsFetching(true)
+            for (let c of nextCircles) {
+                try {
+                    if (c.media) await queueMedia(c.media)
+                } catch (error) {
+                    console.error('API error inresolving stream URL')
+                }
+            }
+            setIsFetching(false)
+        }
+        setCircles(circles.concat(nextCircles))
+    }
 
     async function queueMedia(media: Media) {
         switch (media.type) {
@@ -47,9 +73,19 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
         }
     }
 
+    const onClickItten = useCallback(async () => {
+        circleResource.addFilter('booth.area', '==', '第一展示場')
+    }, [circles])
+
+    const onClickNiten = useCallback(async () => {
+        circleResource.addFilter('booth.area', '==', '第二展示場')
+    }, [circles])
+
     const onClickQueue = useCallback(
         async (index: number) => {
+            setIsPlaying(true)
             dispatch({ type: 'queueClear' })
+            setIsFetching(true)
             for (let circle of circles.slice(index)) {
                 try {
                     if (circle.media) await queueMedia(circle.media)
@@ -57,8 +93,9 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
                     console.error('API error inresolving stream URL')
                 }
             }
+            setIsFetching(false)
         },
-        [circles]
+        [circles, isFetching]
     )
 
     const onClickFetch = useCallback(async () => {
@@ -70,18 +107,14 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
         setCircles(c)
     }, [])
 
-    const onClickNext = useCallback(async () => {
-        const c = await circleResource.next()
-        if (!c.length) {
-            console.log('End')
-            return
-        }
-        setCircles(circles.concat(c))
-    }, [circles])
+    const onClickNext = useCallback(getNextCircle, [circles])
 
     return (
         <App>
             <h1>{exhibition.name}</h1>
+
+            <button onClick={() => onClickItten()}>一展だけ</button>
+            <button onClick={() => onClickNiten()}>二展だけ</button>
 
             <button onClick={() => onClickFetch()}>サークルとる</button>
 

@@ -15,6 +15,11 @@ export const CircleCard: FC<Props> = props => {
     return (
         <li className={props.active ? 'active' : ''}>
             <h3>{circle.name}</h3>
+            <div className="info">
+                <i>
+                    {circle.booth.area} {circle.booth.number}
+                </i>
+            </div>
             <div>
                 <p>{circle.description}</p>
                 {circle.twitterId && (
@@ -46,13 +51,20 @@ export const CircleCard: FC<Props> = props => {
                     word-break: break-all;
                 }
                 .active {
-                    animation: activeman 3.6s linear infinite;
+                    animation: activeman 3.2s linear infinite;
                 }
                 .twitter {
                     font-size: 28px;
                     position: absolute;
                     bottom: 10px;
                     right: 20px;
+                }
+                .info {
+                    position: absolute;
+                    top: 20px;
+                    right: 22px;
+                    color: #ccc;
+                    font-size: 0.93rem;
                 }
                 @media screen and (max-width: 640px) {
                     li {
@@ -63,14 +75,14 @@ export const CircleCard: FC<Props> = props => {
                     0% {
                         background-color: rgba(255, 255, 255, 0);
                     }
-                    42% {
-                        background-color: rgba(255, 255, 255, 0.08);
+                    38% {
+                        background-color: rgba(255, 255, 255, 0.12);
                     }
                     50% {
                         background-color: rgba(255, 255, 255, 0.2);
                     }
-                    58% {
-                        background-color: rgba(255, 255, 255, 0.08);
+                    62% {
+                        background-color: rgba(255, 255, 255, 0.12);
                     }
                     100% {
                         background-color: rgba(255, 255, 255, 0);
