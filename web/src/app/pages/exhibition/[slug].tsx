@@ -11,6 +11,7 @@ import { Media, MediaService } from '../../../../../shared/Media'
 import App from '../../components/App'
 import { getStreamUrl } from '../../db/stream'
 import { CircleCard } from '../../components/CircleCard'
+import Link from 'next/link'
 
 interface Props {
     id: string
@@ -112,7 +113,9 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
     return (
         <App>
             <h1>{exhibition.name}</h1>
-
+            <Link href="/">
+                <a>TOP</a>
+            </Link>
             <button onClick={() => onClickItten()}>一展だけ</button>
             <button onClick={() => onClickNiten()}>二展だけ</button>
 

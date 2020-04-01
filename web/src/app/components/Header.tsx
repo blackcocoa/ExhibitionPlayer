@@ -1,4 +1,4 @@
-import React, { useContext, useState, FC, useCallback, ChangeEvent } from 'react'
+import React, { useContext, useState, useEffect, FC, useCallback, ChangeEvent } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { AppBar, Toolbar, IconButton, Drawer, Divider } from '@material-ui/core'
@@ -11,9 +11,7 @@ type Props = {}
 
 const Header: FC<Props> = () => {
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
-    const [auditionDuration, setAuditionDuration] = useState<number>(
-        (process.env.DEFAULT_AUDITION_DURATION as unknown) as number
-    )
+    const [auditionDuration, setAuditionDuration] = useState<number>(0)
     const { store, dispatch } = useContext(AppContext)
     const router = useRouter()
     const durationMarks = [
@@ -26,6 +24,17 @@ const Header: FC<Props> = () => {
             label: '5分',
         },
     ]
+
+    useEffect(() => {
+        if (!auditionDuration) {
+            let val = localStorage.getItem('auditionDuration')
+            if (!val) {
+                setAuditionDuration((process.env.DEFAULT_AUDITION_DURATION as unknown) as number)
+            } else {
+                setAuditionDuration(parseInt(val))
+            }
+        }
+    }, [])
 
     const openDrawer = useCallback(() => {
         setIsDrawerOpen(true)

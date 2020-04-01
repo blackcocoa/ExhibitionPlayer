@@ -3,11 +3,11 @@ import { NextPage, GetStaticProps } from 'next'
 import Router from 'next/router'
 import { useState, useCallback, useContext } from 'react'
 import { Database } from '../db/index'
-import { CircleResource } from '../db/circles'
 import { Exhibition } from '../../../../shared/Exhibition'
 import { ExhibitionResource } from '../db/exhibitions'
 import { AppContext } from '../store'
 import App from '../components/App'
+import Link from 'next/link'
 
 interface Props {
     exhibitions: Exhibition[]

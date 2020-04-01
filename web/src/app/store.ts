@@ -25,7 +25,12 @@ export const reducer = (state: any, action: any) => {
         }
         case 'updateSetting': {
             let s = { ...state }
-            if (action.payload.auditionDuration) s.auditionDuration = parseInt(action.payload.auditionDuration)
+            if (action.payload.auditionDuration) {
+                let d = parseInt(action.payload.auditionDuration)
+                s.auditionDuration = d
+                localStorage.setItem('auditionDuration', (d / 1000).toString())
+            }
+
             return s
         }
         default:
