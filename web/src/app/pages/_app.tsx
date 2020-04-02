@@ -6,6 +6,7 @@ import { CssBaseline } from '@material-ui/core'
 import { ThemeProvider } from '@material-ui/styles'
 import { createMuiTheme } from '@material-ui/core/styles'
 import '../styles/style.scss'
+import { AppConfig } from '../interfaces/AppConfig'
 
 interface Props {
     Component: any
@@ -22,7 +23,13 @@ function MyApp({ Component, pageProps }: Props) {
     const [store, dispatch] = useReducer(reducer, initialState)
 
     useEffect(() => {
-        console.log('init!')
+        let payload: AppConfig = {}
+        let savedValue = localStorage.getItem('auditionDuration')
+        if (savedValue) {
+            payload.auditionDuration = parseInt(savedValue)
+        }
+
+        dispatch({ type: 'configLoad', payload: payload })
     }, [])
 
     return (

@@ -14,7 +14,7 @@ const Audition: FC<Props> = () => {
         setNextTimer(
             window.setTimeout(() => {
                 dispatch({ type: 'queueNext' })
-            }, store.auditionDuration)
+            }, store.auditionDuration * 1000)
         )
     }
 

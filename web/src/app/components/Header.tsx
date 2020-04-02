@@ -6,13 +6,14 @@ import MenuIcon from '@material-ui/icons/Menu'
 import TextField from '@material-ui/core/TextField'
 import { AppContext } from '../store'
 import { BaseSlider } from '../components/BaseSlider'
+import { AppConfig } from '../interfaces/AppConfig'
 
 type Props = {}
 
 const Header: FC<Props> = () => {
-    const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
-    const [auditionDuration, setAuditionDuration] = useState<number>(0)
     const { store, dispatch } = useContext(AppContext)
+    const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
+    const [auditionDuration, setAuditionDuration] = useState<number>(store.auditionDuration)
     const router = useRouter()
     const durationMarks = [
         {
@@ -24,16 +25,12 @@ const Header: FC<Props> = () => {
             label: '5分',
         },
     ]
-
     useEffect(() => {
-        if (!auditionDuration) {
-            let val = localStorage.getItem('auditionDuration')
-            if (!val) {
-                setAuditionDuration((process.env.DEFAULT_AUDITION_DURATION as unknown) as number)
-            } else {
-                setAuditionDuration(parseInt(val))
-            }
-        }
+        window.addEventListener('configLoad', e => {
+            const event = e as CustomEvent
+            const config: AppConfig = event.detail
+            if (config.auditionDuration) setAuditionDuration(config.auditionDuration)
+        })
     }, [])
 
     const openDrawer = useCallback(() => {
@@ -43,13 +40,12 @@ const Header: FC<Props> = () => {
     const closeDrawer = useCallback(() => {
         setIsDrawerOpen(false)
     }, [])
-
     const onChangeAuditionDuration = (event: ChangeEvent<{}>, value: number | number[]) => {
         setAuditionDuration(value as number)
     }
 
     const onChangeCommitedAuditionDuration = useCallback((event, value) => {
-        dispatch({ type: 'updateSetting', payload: { auditionDuration: 1000 * value } })
+        dispatch({ type: 'updateSetting', payload: { auditionDuration: value } })
     }, [])
 
     return (

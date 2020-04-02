@@ -1,6 +1,4 @@
-const withSass = require('@zeit/next-sass')
-
-module.exports = withSass({
+module.exports = {
     cssModules: true,
     distDir: '../../dist/functions/next',
     env: {
@@ -24,4 +22,4 @@ module.exports = withSass({
 
         return config
     },
-})
+}

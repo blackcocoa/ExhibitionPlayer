@@ -20,7 +20,7 @@ const Index: NextPage<Props> = ({ exhibitions }) => {
 
     const onClickExhibition = useCallback((exhibition: Exhibition) => {
         dispatch({ type: 'exhibitionSet', payload: exhibition })
-        Router.push(`/exhibition/${exhibition.slug}`)
+        Router.push('/exhibition/[slug]', `/exhibition/${exhibition.slug}`)
     }, [])
 
     return (
