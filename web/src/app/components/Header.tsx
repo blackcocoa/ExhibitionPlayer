@@ -26,7 +26,7 @@ const Header: FC<Props> = () => {
         },
     ]
     useEffect(() => {
-        window.addEventListener('configLoad', e => {
+        window.addEventListener('configLoad', (e) => {
             const event = e as CustomEvent
             const config: AppConfig = event.detail
             if (config.auditionDuration) setAuditionDuration(config.auditionDuration)
@@ -51,7 +51,11 @@ const Header: FC<Props> = () => {
     return (
         <AppBar position="fixed">
             <Toolbar variant="dense">
-                <h1>同人音楽小まとめ</h1>
+                <Link href="/">
+                    <h1>
+                        <a>同人音楽小まとめ</a>
+                    </h1>
+                </Link>
                 <IconButton edge="start" color="inherit" aria-label="menu" onClick={() => openDrawer()}>
                     <MenuIcon />
                 </IconButton>

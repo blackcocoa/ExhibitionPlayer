@@ -12,6 +12,7 @@ import App from '../../components/App'
 import { getStreamUrl } from '../../db/stream'
 import { CircleCard } from '../../components/CircleCard'
 import Link from 'next/link'
+import { FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from '@material-ui/core'
 
 interface Props {
     id: string
@@ -26,6 +27,7 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
     const [circles, setCircles] = useState<Circle[]>([])
     const [isPlaying, setIsPlaying] = useState<boolean>(false)
     const [isFetching, setIsFetching] = useState<boolean>(false)
+    const [area, setArea] = useState<string>('')
     const { store, dispatch } = useContext(AppContext)
 
     const exhibition = new Exhibition(id, name, slug)
@@ -62,7 +64,7 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
                 break
             case MediaService.SoundCloud:
                 if (media.id)
-                    await getStreamUrl(media.id).then(result =>
+                    await getStreamUrl(media.id).then((result) =>
                         dispatch({
                             type: 'mediaPush',
                             payload: { id: result.data.id, url: result.data.url, type: MediaService.SoundCloud },
@@ -74,13 +76,9 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
         }
     }
 
-    const onClickItten = useCallback(async () => {
-        circleResource.addFilter('booth.area', '==', '第一展示場')
-    }, [circles])
-
-    const onClickNiten = useCallback(async () => {
-        circleResource.addFilter('booth.area', '==', '第二展示場')
-    }, [circles])
+    const onChangeArea = useCallback((event) => {
+        setArea(event.target.value)
+    }, [])
 
     const onClickQueue = useCallback(
         async (index: number) => {
@@ -100,24 +98,32 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
     )
 
     const onClickFetch = useCallback(async () => {
+        circleResource.clearFilter()
+        if (area) {
+            circleResource.addFilter('booth.area', '==', area)
+        }
         const c = await circleResource.fetch()
         if (!c.length) {
             console.log('End')
             return
         }
         setCircles(c)
-    }, [])
+    }, [area])
 
     const onClickNext = useCallback(getNextCircle, [circles])
 
     return (
         <App>
             <h1>{exhibition.name}</h1>
-            <Link href="/">
-                <a>TOP</a>
-            </Link>
-            <button onClick={() => onClickItten()}>一展だけ</button>
-            <button onClick={() => onClickNiten()}>二展だけ</button>
+
+            <FormControl component="fieldset">
+                <FormLabel component="legend">展示場</FormLabel>
+                <RadioGroup aria-label="area" name="area" value={area} onChange={onChangeArea}>
+                    <FormControlLabel value="" control={<Radio />} label="すべて" />
+                    <FormControlLabel value="第一展示場" control={<Radio />} label="第一展示場" />
+                    <FormControlLabel value="第二展示場" control={<Radio />} label="第二展示場" />
+                </RadioGroup>
+            </FormControl>
 
             <button onClick={() => onClickFetch()}>サークルとる</button>
 
@@ -152,7 +158,7 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
     const exhibitions = await new ExhibitionResource(db.getInstance()).fetch()
-    const paths = exhibitions.map(exhibition => ({
+    const paths = exhibitions.map((exhibition) => ({
         params: {
             slug: exhibition.slug,
         },
@@ -160,7 +166,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     return { paths: paths, fallback: false }
 }
 
-export const getStaticProps: GetStaticProps = async context => {
+export const getStaticProps: GetStaticProps = async (context) => {
     const slug = context?.params?.slug as string
     if (!slug) throw new Error('error fetching exhibition data for the page')
 

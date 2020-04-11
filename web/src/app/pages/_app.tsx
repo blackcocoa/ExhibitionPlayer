@@ -13,7 +13,7 @@ interface Props {
     pageProps: any
 }
 
-const theme = createMuiTheme({
+export const theme = createMuiTheme({
     palette: {
         type: 'dark',
     },

@@ -10,7 +10,7 @@ export class CircleResource {
     exhibition: Exhibition | undefined
     filterFields: string[] // To avoid firebase errors if where and orderBy are same
     limit: number
-    last: { id: string; data: firestore.DocumentData } | null
+    last: firestore.DocumentSnapshot | null
 
     constructor(db: firestore.Firestore) {
         this.db = db
@@ -29,24 +29,20 @@ export class CircleResource {
 
         let doc = this.query
 
-        if (!this.filterFields.find(f => f === 'booth.area')) doc = doc.orderBy('booth.area', 'asc')
-        doc = doc.orderBy('booth.number', 'asc').orderBy(firebase.firestore.FieldPath.documentId())
+        if (!this.filterFields.find((f) => f === 'booth.area')) doc = doc.orderBy('booth.area', 'asc')
+        doc = doc.orderBy('booth.number', 'asc').orderBy(firebase.firestore.FieldPath.documentId(), 'asc')
 
         if (this.last) {
-            const lastCircle = this.last.data as Circle
-            doc = doc.startAfter(lastCircle.name, this.last.id)
+            doc = doc.startAfter(this.last)
         }
         const snapshot = await doc.limit(this.limit).get()
 
         if (snapshot.empty) return []
 
-        this.last = {
-            id: snapshot.docs[snapshot.docs.length - 1].id,
-            data: snapshot.docs[snapshot.docs.length - 1].data(),
-        }
+        this.last = snapshot.docs[snapshot.docs.length - 1]
 
         let circles: Circle[] = []
-        snapshot.forEach(doc => {
+        snapshot.forEach((doc) => {
             circles.push(<Circle>doc.data())
         })
 
@@ -55,10 +51,7 @@ export class CircleResource {
 
     setExhibition(exhibition: Exhibition) {
         this.exhibition = exhibition
-        this.collection = this.db
-            .collection('exhibitions')
-            .doc(this.exhibition.id)
-            .collection('circles')
+        this.collection = this.db.collection('exhibitions').doc(this.exhibition.id).collection('circles')
     }
 
     addFilter(field: string, operator: string, value: string): void {
