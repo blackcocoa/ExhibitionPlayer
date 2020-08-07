@@ -29,8 +29,8 @@ export class CircleResource {
 
         let doc = this.query
 
-        if (!this.filterFields.find((f) => f === 'booth.area')) doc = doc.orderBy('booth.area', 'asc')
-        doc = doc.orderBy('booth.number', 'asc').orderBy(firebase.firestore.FieldPath.documentId(), 'asc')
+        // if (!this.filterFields.find((f) => f === 'booth.area')) doc = doc.orderBy('booth.area', 'asc')
+        doc = doc.orderBy(firebase.firestore.FieldPath.documentId(), 'asc')
 
         if (this.last) {
             doc = doc.startAfter(this.last)
@@ -60,8 +60,13 @@ export class CircleResource {
         this.filterFields.push(field)
     }
 
+    orderBy(field: string, order: 'desc' | 'asc' | undefined): void {
+        this.query = this.query?.orderBy(field, order)
+    }
+
     clearFilter(): void {
-        this.query = this.collection
+        if (!this.exhibition) throw new Error('Exhibition not set')
+        this.query = this.db.collection('exhibitions').doc(this.exhibition.id).collection('circles')
         this.filterFields = []
     }
 

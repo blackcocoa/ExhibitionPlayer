@@ -24,7 +24,7 @@
         "next": "^9.3.4",
         "react": "^16.7.0",
         "react-dom": "^16.7.0",
-        "react-player": "^1.15.2",
+        "react-player": "2.6.0",
         "soundcloud-v2-api": "^0.1.4"
     },
     "devDependencies": {

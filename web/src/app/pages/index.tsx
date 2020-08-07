@@ -5,7 +5,7 @@ import { useState, useCallback, useContext } from 'react'
 import { Database } from '../db/index'
 import { Exhibition } from '../../../../shared/Exhibition'
 import { ExhibitionResource } from '../db/exhibitions'
-import { AppContext } from '../store'
+import { reducer, initialState, AppContext } from '../store'
 import App from '../components/App'
 import Link from 'next/link'
 
@@ -16,8 +16,7 @@ interface Props {
 const db = new Database()
 
 const Index: NextPage<Props> = ({ exhibitions }) => {
-    const { store, dispatch } = useContext(AppContext)
-
+    const { state, dispatch } = useContext(AppContext)
     const onClickExhibition = useCallback((exhibition: Exhibition) => {
         dispatch({ type: 'exhibitionSet', payload: exhibition })
         Router.push('/exhibition/[slug]', `/exhibition/${exhibition.slug}`)
@@ -50,11 +49,11 @@ const Index: NextPage<Props> = ({ exhibitions }) => {
     )
 }
 
-export const getStaticProps: GetStaticProps = async context => {
+export const getStaticProps: GetStaticProps = async (context) => {
     const exhibitionResource = new ExhibitionResource(db.getInstance())
     const exhibitions = await exhibitionResource.fetch()
 
-    return { props: { exhibitions: exhibitions.map(e => e.serialize()) } }
+    return { props: { exhibitions: exhibitions.map((e) => e.serialize()) } }
 }
 
 export default Index

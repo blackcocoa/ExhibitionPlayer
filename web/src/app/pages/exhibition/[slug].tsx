@@ -6,12 +6,11 @@ import { CircleResource } from '../../db/circles'
 import { ExhibitionResource } from '../../db/exhibitions'
 import { Exhibition } from '../../../../../shared/Exhibition'
 import { Circle } from '../../../../../shared/Circle'
-import { AppContext } from '../../store'
+import { reducer, initialState, AppContext } from '../../store'
 import { Media, MediaService } from '../../../../../shared/Media'
 import App from '../../components/App'
 import { getStreamUrl } from '../../db/stream'
 import { CircleCard } from '../../components/CircleCard'
-import Link from 'next/link'
 import { FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from '@material-ui/core'
 
 interface Props {
@@ -28,14 +27,16 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
     const [isPlaying, setIsPlaying] = useState<boolean>(false)
     const [isFetching, setIsFetching] = useState<boolean>(false)
     const [area, setArea] = useState<string>('')
-    const { store, dispatch } = useContext(AppContext)
+    const [orderBy, setOrderBy] = useState<string>('booth.number')
+    const [order, setOrder] = useState<'desc' | 'asc'>('asc')
+    const { state, dispatch } = useContext(AppContext)
 
     const exhibition = new Exhibition(id, name, slug)
     circleResource.setExhibition(exhibition)
 
     useEffect(() => {
-        if (isPlaying && !isFetching && store.playQueue.length <= 2) getNextCircle()
-    }, [isPlaying, isFetching, store])
+        if (isPlaying && !isFetching && state.playQueue.length <= 2) getNextCircle()
+    }, [isPlaying, isFetching, state])
 
     const getNextCircle = async () => {
         const nextCircles = await circleResource.next()
@@ -63,13 +64,14 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
                 dispatch({ type: 'mediaPush', payload: media })
                 break
             case MediaService.SoundCloud:
-                if (media.id)
+                if (media.id) {
                     await getStreamUrl(media.id).then((result) =>
                         dispatch({
                             type: 'mediaPush',
                             payload: { id: result.data.id, url: result.data.url, type: MediaService.SoundCloud },
                         })
                     )
+                }
                 break
             default:
                 break
@@ -78,6 +80,12 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
 
     const onChangeArea = useCallback((event) => {
         setArea(event.target.value)
+    }, [])
+    const onChangeOrderBy = useCallback((event) => {
+        setOrderBy(event.target.value)
+    }, [])
+    const onChangeOrder = useCallback((event) => {
+        setOrder(event.target.value)
     }, [])
 
     const onClickQueue = useCallback(
@@ -101,14 +109,18 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
         circleResource.clearFilter()
         if (area) {
             circleResource.addFilter('booth.area', '==', area)
+        } else {
+            circleResource.orderBy('booth.area', 'asc')
         }
+        circleResource.orderBy(orderBy, order)
+
         const c = await circleResource.fetch()
         if (!c.length) {
             console.log('End')
             return
         }
         setCircles(c)
-    }, [area])
+    }, [area, order, orderBy])
 
     const onClickNext = useCallback(getNextCircle, [circles])
 
@@ -125,6 +137,18 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
                 </RadioGroup>
             </FormControl>
 
+            <FormControl component="fieldset">
+                <FormLabel component="legend">並び順</FormLabel>
+                <RadioGroup aria-label="area" name="orderBy" value={orderBy} onChange={onChangeOrderBy}>
+                    <FormControlLabel value="booth.number" control={<Radio />} label="ブース番号" />
+                    <FormControlLabel value="name" control={<Radio />} label="サークル名" />
+                </RadioGroup>
+                {/* <RadioGroup aria-label="area" name="order" value={order} onChange={onChangeOrder}>
+                    <FormControlLabel value="asc" control={<Radio />} label="昇順" />
+                    <FormControlLabel value="desc" control={<Radio />} label="降順" />
+                </RadioGroup> */}
+            </FormControl>
+
             <button onClick={() => onClickFetch()}>サークルとる</button>
 
             <h2>サークル一覧</h2>
@@ -134,7 +158,7 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
                         <CircleCard
                             circle={circle}
                             onClickQueue={onClickQueue}
-                            active={circle.media && store.playQueue.length && store.playQueue[0].id === circle.media.id}
+                            active={circle.media && state.playQueue.length && state.playQueue[0].id === circle.media.id}
                             index={index}
                             key={index}
                         />

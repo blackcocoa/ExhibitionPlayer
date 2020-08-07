@@ -4,16 +4,16 @@ import Link from 'next/link'
 import { AppBar, Toolbar, IconButton, Drawer, Divider } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
 import TextField from '@material-ui/core/TextField'
-import { AppContext } from '../store'
+import { reducer, initialState, AppContext } from '../store'
 import { BaseSlider } from '../components/BaseSlider'
 import { AppConfig } from '../interfaces/AppConfig'
 
 type Props = {}
 
 const Header: FC<Props> = () => {
-    const { store, dispatch } = useContext(AppContext)
+    const { state, dispatch } = useContext(AppContext)
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
-    const [auditionDuration, setAuditionDuration] = useState<number>(store.auditionDuration)
+    const [auditionDuration, setAuditionDuration] = useState<number>(state.auditionDuration)
     const router = useRouter()
     const durationMarks = [
         {

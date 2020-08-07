@@ -1,12 +1,13 @@
-import React, { useReducer, useEffect } from 'react'
+import React, { useReducer, useEffect, Dispatch } from 'react'
 import Head from 'next/head'
 import Audition from '../components/Audition'
-import { AppContext, reducer, initialState } from '../store'
+import { reducer } from '../store'
 import { CssBaseline } from '@material-ui/core'
 import { ThemeProvider } from '@material-ui/styles'
 import { createMuiTheme } from '@material-ui/core/styles'
 import '../styles/style.scss'
 import { AppConfig } from '../interfaces/AppConfig'
+import { IContextProps, AppContext, initialState } from '../store'
 
 interface Props {
     Component: any
@@ -20,7 +21,8 @@ export const theme = createMuiTheme({
 })
 
 function MyApp({ Component, pageProps }: Props) {
-    const [store, dispatch] = useReducer(reducer, initialState)
+    const [state, dispatch] = useReducer(reducer, initialState)
+    const value: IContextProps = { state, dispatch }
 
     useEffect(() => {
         let payload: AppConfig = {}
@@ -34,7 +36,7 @@ function MyApp({ Component, pageProps }: Props) {
 
     return (
         <ThemeProvider theme={theme}>
-            <AppContext.Provider value={{ store, dispatch }}>
+            <AppContext.Provider value={value}>
                 <CssBaseline />
 
                 <Head>

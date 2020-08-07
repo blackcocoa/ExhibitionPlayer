@@ -1,20 +1,20 @@
 import React, { useContext, useState, FC } from 'react'
 import ReactPlayer from 'react-player'
 import { Media, MediaService } from '../../../../shared/Media'
-import { AppContext } from '../store'
+import { reducer, initialState, AppContext } from '../store'
 
 type Props = {}
 
 const Audition: FC<Props> = () => {
     const [nextTimer, setNextTimer] = useState<number | null>(null)
-    const { store, dispatch } = useContext(AppContext)
-    const queue = store.playQueue
+    const { state, dispatch } = useContext(AppContext)
+    const queue = state.playQueue
 
     const onReady = () => {
         setNextTimer(
             window.setTimeout(() => {
                 dispatch({ type: 'queueNext' })
-            }, store.auditionDuration * 1000)
+            }, state.auditionDuration * 1000)
         )
     }
 

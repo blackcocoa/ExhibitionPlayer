@@ -1,11 +1,30 @@
 import React from 'react'
+import { Media } from '../../../shared/Media'
 import { AppConfig } from './interfaces/AppConfig'
+import { Exhibition } from '../../../shared/Exhibition'
 
-export const initialState = {
+if (!process.env.DEFAULT_AUDITION_DURATION) {
+    throw new Error('env not set properly')
+}
+
+export interface State {
+    activeExhibition: Exhibition | null
+    playQueue: Media[]
+    auditionDuration: number
+}
+
+export const initialState: State = {
     activeExhibition: null,
     playQueue: [],
-    auditionDuration: process.env.DEFAULT_AUDITION_DURATION,
+    auditionDuration: parseInt(process.env.DEFAULT_AUDITION_DURATION),
 }
+
+export interface IContextProps {
+    state: State
+    dispatch: React.Dispatch<any>
+}
+
+export const AppContext = React.createContext({} as IContextProps)
 
 export const reducer = (state: any, action: any) => {
     switch (action.type) {
@@ -55,6 +74,3 @@ export const reducer = (state: any, action: any) => {
             return { ...state }
     }
 }
-
-//@ts-ignore
-export const AppContext = React.createContext()
