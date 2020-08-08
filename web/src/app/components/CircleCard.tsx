@@ -1,6 +1,7 @@
 import { Circle } from '../../../../shared/Circle'
 import { FC } from 'react'
 import TwitterIcon from '@material-ui/icons/Twitter'
+import { Button } from '@material-ui/core'
 
 type Props = {
     circle: Circle
@@ -9,37 +10,40 @@ type Props = {
     onClickQueue: Function
 }
 
-export const CircleCard: FC<Props> = props => {
+export const CircleCard: FC<Props> = (props) => {
     const circle = props.circle
 
     return (
         <li className={props.active ? 'active' : ''}>
             <h3>{circle.name}</h3>
-            <div className="info">
-                <i>
-                    {circle.booth.area} {circle.booth.number}
-                </i>
-            </div>
+
             <div>
                 <p>{circle.description}</p>
+                <i className="booth-number">
+                    {circle.booth.area} {circle.booth.number}
+                </i>
                 {circle.twitterId && (
                     <i className="twitter">
-                        <TwitterIcon>
-                            <a href={`https://twitter.com/${circle.twitterId}`} target="_blank">
-                                Twitter
-                            </a>
-                        </TwitterIcon>
+                        <a href={`https://twitter.com/${circle.twitterId}`} target="_blank">
+                            <TwitterIcon />
+                        </a>
                     </i>
                 )}
-                {circle.media && <button onClick={() => props.onClickQueue(props.index)}>ここから再生</button>}
+                {circle.media && (
+                    <Button variant="contained" onClick={() => props.onClickQueue(props.index)}>
+                        ここから再生
+                    </Button>
+                )}
             </div>
             <style jsx>{`
                 li {
+                    background-color: #444;
                     box-sizing: border-box;
                     border: 1px solid #666;
                     border-radius: 2px;
+                    flex: 0 1 31%;
                     margin-bottom: 20px;
-                    padding: 20px;
+                    padding: 20px 20px 45px;
                     position: relative;
                     text-align: left;
                 }
@@ -56,17 +60,17 @@ export const CircleCard: FC<Props> = props => {
                 .twitter {
                     font-size: 28px;
                     position: absolute;
-                    bottom: 10px;
+                    bottom: 4px;
                     right: 20px;
                 }
-                .info {
+                .booth-number {
                     position: absolute;
-                    top: 20px;
-                    right: 22px;
+                    bottom: 13px;
+                    left: 22px;
                     color: #ccc;
                     font-size: 0.93rem;
                 }
-                @media screen and (max-width: 640px) {
+                @media screen and (max-width: 767px) {
                     li {
                         flex-basis: 100%;
                     }

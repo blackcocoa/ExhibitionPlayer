@@ -15,5 +15,12 @@
         "noEmit": false
     },
     "exclude": ["node_modules"],
-    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "components/ScriptTag.js", "pages/index.js"]
+    "include": [
+        "next-env.d.ts",
+        "**/*.ts",
+        "**/*.tsx",
+        "components/ScriptTag.js",
+        "pages/index.js",
+        "components/App.js"
+    ]
 }

@@ -17,8 +17,8 @@ const Header: FC<Props> = () => {
     const router = useRouter()
     const durationMarks = [
         {
-            value: 0,
-            label: '3秒',
+            value: 5,
+            label: '5秒',
         },
         {
             value: 600,
@@ -73,7 +73,7 @@ const Header: FC<Props> = () => {
                                 valueLabelDisplay="on"
                                 step={1}
                                 marks={durationMarks}
-                                min={3}
+                                min={5}
                                 max={600}
                                 onChange={onChangeAuditionDuration}
                                 onChangeCommitted={onChangeCommitedAuditionDuration}

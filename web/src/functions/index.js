@@ -15,16 +15,29 @@ exports.next = functions.region('us-central1').https.onRequest((req, res) => {
     return app.prepare().then(() => handle(req, res))
 })
 
-exports.getStreamUrl = functions.region('us-central1').https.onCall(async (data, context) => {
+/**
+ * Get SoundCloud Streaming Url by Media ID
+ */
+
+const getItById = async (trackId) => {
     const clientId = 'wNHGoG6RrCXPaRsA49blO9sZxs98xaQ6'
 
-    try {
-        const response = await axios.get(`https://api-v2.soundcloud.com/tracks/${data.trackId}?client_id=${clientId}`)
-        const transcoding = response.data.media.transcodings.filter((t) => t.format.protocol === 'progressive')
-        if (!transcoding) return res.json({ url: null })
-        const streamResponse = await axios.get(`${transcoding[0].url}?client_id=${clientId}`)
-        return { url: streamResponse.data.url, id: data.trackId }
-    } catch (error) {
-        throw new HttpsError('INTERNAL', `Error while getting ${data.trackId}`, { trackId: data.trackId })
+    const response = await axios.get(`https://api-v2.soundcloud.com/tracks/${trackId}?client_id=${clientId}`)
+    const transcoding = response.data.media.transcodings.filter((t) => t.format.protocol === 'progressive')
+    if (!transcoding) return res.json({ url: null })
+    const coverUrl = response.data.artwork_url || response.data.user.avatar_url
+    const streamResponse = await axios.get(`${transcoding[0].url}?client_id=${clientId}`)
+    return { url: streamResponse.data.url, id: trackId, coverUrl: coverUrl }
+}
+
+exports.getStreamUrl = functions.region('us-central1').https.onCall(async (data, context) => {
+    let media = []
+    for (const id of data.trackId) {
+        try {
+            media.push(await getItById(id))
+        } catch (error) {
+            throw new HttpsError('INTERNAL', `Error while getting ${trackId}`, { trackId: trackId })
+        }
     }
+    return media
 })
