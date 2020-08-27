@@ -2,7 +2,7 @@ import React, { useReducer, useEffect, Dispatch } from 'react'
 import Head from 'next/head'
 import Audition from '../components/Audition'
 import { reducer } from '../store'
-import { CssBaseline } from '@material-ui/core'
+import { CssBaseline, CircularProgress } from '@material-ui/core'
 import { ThemeProvider } from '@material-ui/styles'
 import { createMuiTheme } from '@material-ui/core/styles'
 import '../styles/style.scss'
@@ -51,6 +51,29 @@ function MyApp({ Component, pageProps }: Props) {
                 </Head>
                 <Component {...pageProps} />
                 <Audition />
+                {state.isLoading ? (
+                    <>
+                        <div className="loadmask">
+                            <CircularProgress />
+                        </div>
+                        <style jsx>{`
+                            .loadmask {
+                                position: fixed;
+                                background-color: rgba(0, 0, 0, 0.5);
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                top: 0;
+                                left: 0;
+                                width: 100vw;
+                                height: 100vh;
+                                z-index: 3000;
+                            }
+                        `}</style>
+                    </>
+                ) : (
+                    <></>
+                )}
             </AppContext.Provider>
         </ThemeProvider>
     )

@@ -1,9 +1,8 @@
 import React, { useContext, useState, useEffect, FC, useCallback, ChangeEvent } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { AppBar, Toolbar, IconButton, Drawer, Divider } from '@material-ui/core'
+import { AppBar, Toolbar, IconButton, Drawer, Divider, Button } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
-import TextField from '@material-ui/core/TextField'
 import { reducer, initialState, AppContext } from '../store'
 import { BaseSlider } from '../components/BaseSlider'
 import { AppConfig } from '../interfaces/AppConfig'
@@ -13,7 +12,7 @@ type Props = {}
 const Header: FC<Props> = () => {
     const { state, dispatch } = useContext(AppContext)
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
-    const [auditionDuration, setAuditionDuration] = useState<number>(state.auditionDuration)
+    const [auditionDuration, setAuditionDuration] = useState<number>(state ? state.auditionDuration : 600)
     const router = useRouter()
     const durationMarks = [
         {
@@ -61,45 +60,55 @@ const Header: FC<Props> = () => {
                 </IconButton>
             </Toolbar>
             <Drawer anchor="top" open={isDrawerOpen} onClose={() => closeDrawer()}>
-                <div className="Drawer">
-                    <b className="Drawer-title">同人音楽小まとめ</b>
+                <div className="drawer">
+                    <b className="drawer-title">同人音楽小まとめ</b>
 
-                    <dl>
-                        <dt>1曲ごとの再生時間（秒）</dt>
-                        <dd>
-                            <BaseSlider
-                                value={auditionDuration}
-                                aria-labelledby="discrete-slider"
-                                valueLabelDisplay="on"
-                                step={1}
-                                marks={durationMarks}
-                                min={5}
-                                max={600}
-                                onChange={onChangeAuditionDuration}
-                                onChangeCommitted={onChangeCommitedAuditionDuration}
-                            />
-                        </dd>
-                    </dl>
-                    <ul>
-                        <li>
-                            {router.pathname === '/' ? (
-                                <i className="Anchor-body">Home</i>
-                            ) : (
-                                <Link href="/">
-                                    <a className="Anchor-body">Home</a>
-                                </Link>
-                            )}
-                        </li>
-                        <li>
-                            {router.pathname === '/about' ? (
-                                <i className="Anchor-body">About</i>
-                            ) : (
-                                <Link href="/about">
-                                    <a className="Anchor-body">About</a>
-                                </Link>
-                            )}
-                        </li>
-                    </ul>
+                    <section>
+                        <ul>
+                            <li>
+                                {router.pathname === '/' ? (
+                                    <i className="Anchor-body">Home</i>
+                                ) : (
+                                    <Link href="/">
+                                        <a className="Anchor-body">Home</a>
+                                    </Link>
+                                )}
+                            </li>
+                            <li>
+                                {router.pathname === '/about' ? (
+                                    <i className="Anchor-body">About this site</i>
+                                ) : (
+                                    <Link href="/about">
+                                        <a className="Anchor-body">About this site</a>
+                                    </Link>
+                                )}
+                            </li>
+                        </ul>
+                    </section>
+                    <Divider />
+                    <section>
+                        <b className="drawer-subtitle">設定</b>
+
+                        <dl>
+                            <dt>1曲ごとの再生時間（秒）</dt>
+                            <dd>
+                                <BaseSlider
+                                    value={auditionDuration}
+                                    aria-labelledby="discrete-slider"
+                                    valueLabelDisplay="on"
+                                    step={1}
+                                    marks={durationMarks}
+                                    min={5}
+                                    max={600}
+                                    onChange={onChangeAuditionDuration}
+                                    onChangeCommitted={onChangeCommitedAuditionDuration}
+                                />
+                            </dd>
+                        </dl>
+                    </section>
+                    <Button variant="contained" onClick={() => setIsDrawerOpen(false)}>
+                        OK
+                    </Button>
                 </div>
             </Drawer>
 
@@ -112,17 +121,24 @@ const Header: FC<Props> = () => {
                     max-width: 420px;
                     margin: 0 auto 20px;
                 }
+                section {
+                    padding: 40px 0;
+                }
                 .Anchor-body {
                     display: inline-block;
                     padding: 10px;
                 }
-                .Drawer {
+                .drawer {
                     padding: 60px 20px;
                 }
-                .Drawer-title {
+                .drawer-title {
                     display: block;
                     font-size: 18px;
-                    margin-bottom: 60px;
+                }
+                .drawer-subtitle {
+                    display: block;
+                    font-size: 16px;
+                    margin-bottom: 50px;
                 }
             `}</style>
         </AppBar>

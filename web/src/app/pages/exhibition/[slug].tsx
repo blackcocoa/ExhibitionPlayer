@@ -1,13 +1,12 @@
 import * as React from 'react'
-import { NextPage, GetServerSideProps, GetStaticProps, GetStaticPaths } from 'next'
+import { NextPage, GetStaticProps, GetStaticPaths } from 'next'
 import { useState, useCallback, useContext, useEffect } from 'react'
 import { Database } from '../../db/index'
 import { CircleResource } from '../../db/circles'
 import { ExhibitionResource } from '../../db/exhibitions'
 import { Exhibition } from '../../../../../shared/Exhibition'
 import { Circle } from '../../../../../shared/Circle'
-import { reducer, initialState, AppContext } from '../../store'
-import { Media, MediaService } from '../../../../../shared/Media'
+import { AppContext } from '../../store'
 import App from '../../components/App'
 import { CircleCard } from '../../components/CircleCard'
 import { FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Button } from '@material-ui/core'
@@ -59,24 +58,25 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
     const onChangeOrderBy = useCallback((event) => {
         setOrderBy(event.target.value)
     }, [])
-    const onChangeOrder = useCallback((event) => {
-        setOrder(event.target.value)
-    }, [])
 
     const onClickQueue = useCallback(
         async (index: number) => {
+            dispatch({ type: 'loading' })
             setIsPlaying(true)
             dispatch({ type: 'queueClear' })
             setIsFetching(true)
+            setCircles(await circleResource.fetchStreamUrls(circles))
             for (let circle of circles.slice(index)) {
                 if (circle.media) dispatch({ type: 'mediaPush', payload: circle.media })
             }
             setIsFetching(false)
+            dispatch({ type: 'loadingEnd' })
         },
         [circles, isFetching]
     )
 
     const onClickFetch = useCallback(async () => {
+        dispatch({ type: 'loading' })
         circleResource.clearFilter()
         if (area) {
             circleResource.addFilter('booth.area', '==', area)
@@ -91,6 +91,7 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
             return
         }
         setCircles(c)
+        dispatch({ type: 'loadingEnd' })
     }, [area, order, orderBy])
 
     const onClickNext = useCallback(getNextCircle, [circles])

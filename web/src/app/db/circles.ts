@@ -49,6 +49,10 @@ export class CircleResource {
             circles.push(<Circle>doc.data())
         })
 
+        return await this.fetchStreamUrls(circles)
+    }
+
+    async fetchStreamUrls(circles: Circle[]) {
         const streamUrls: SoundCloudStreamUrl[] = await getStreamUrl(
             circles
                 .filter((c) => c.media && c.media.id && c.media.type === MediaService.SoundCloud)

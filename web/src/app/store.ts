@@ -11,12 +11,14 @@ export interface State {
     activeExhibition: Exhibition | null
     playQueue: Media[]
     auditionDuration: number
+    isLoading: boolean
 }
 
 export const initialState: State = {
     activeExhibition: null,
     playQueue: [],
     auditionDuration: parseInt(process.env.DEFAULT_AUDITION_DURATION),
+    isLoading: false,
 }
 
 export interface IContextProps {
@@ -28,6 +30,12 @@ export const AppContext = React.createContext({} as IContextProps)
 
 export const reducer = (state: any, action: any) => {
     switch (action.type) {
+        case 'loading': {
+            return { ...state, isLoading: true }
+        }
+        case 'loadingEnd': {
+            return { ...state, isLoading: false }
+        }
         case 'configLoad': {
             const config = action.payload as AppConfig
             let s = { ...state }
