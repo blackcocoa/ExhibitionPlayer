@@ -2,6 +2,9 @@ import firebase, { firestore } from 'firebase/app'
 import 'firebase/firestore'
 import { Circle } from '../../../../shared/Circle'
 import { Exhibition } from '../../../../shared/Exhibition'
+import { SoundCloudStreamUrl } from '../../../../shared/SoundCloudStreamUrl'
+import { getStreamUrl } from './stream'
+import { MediaService } from '../../../../shared/Media'
 
 export class CircleResource {
     db: firestore.Firestore
@@ -46,7 +49,24 @@ export class CircleResource {
             circles.push(<Circle>doc.data())
         })
 
-        return circles
+        const streamUrls: SoundCloudStreamUrl[] = await getStreamUrl(
+            circles
+                .filter((c) => c.media && c.media.id && c.media.type === MediaService.SoundCloud)
+                .map<string>((c) => c.media!.id!)
+        )
+
+        return circles.map<Circle>((c) => {
+            if (!c.media || !c.media.id) return c
+            const streamUrl = streamUrls.find((u) => u.id === c.media!.id)
+            if (!streamUrl || !streamUrl.url) return c
+
+            c.media.title = `${c.name} (${c.booth.area} ${c.booth.number})`
+            c.media.description = c.description
+            c.media.url = streamUrl.url
+            c.media.coverUrl = streamUrl.coverUrl
+
+            return c
+        })
     }
 
     setExhibition(exhibition: Exhibition) {

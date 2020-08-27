@@ -9,6 +9,7 @@ scraper/.env
 web/.next/
 web/next.config.js
 web/dist
+web/ui-debug.log
 
 # Firebase cache
 .firebase

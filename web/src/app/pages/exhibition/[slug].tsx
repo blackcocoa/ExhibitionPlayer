@@ -9,7 +9,6 @@ import { Circle } from '../../../../../shared/Circle'
 import { reducer, initialState, AppContext } from '../../store'
 import { Media, MediaService } from '../../../../../shared/Media'
 import App from '../../components/App'
-import { getStreamUrl } from '../../db/stream'
 import { CircleCard } from '../../components/CircleCard'
 import { FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Button } from '@material-ui/core'
 
@@ -47,47 +46,11 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
         if (isPlaying) {
             setIsFetching(true)
             for (let c of nextCircles) {
-                try {
-                    if (c.media)
-                        await queueMedia({
-                            ...c.media,
-                            title: `${c.name} (${c.booth.area} ${c.booth.number})`,
-                            description: c.description,
-                        })
-                } catch (error) {
-                    console.error('API error in resolving stream URL')
-                }
+                if (c.media) dispatch({ type: 'mediaPush', payload: c.media })
             }
             setIsFetching(false)
         }
         setCircles(circles.concat(nextCircles))
-    }
-
-    async function queueMedia(media: Media) {
-        switch (media.type) {
-            case MediaService.YouTube:
-                dispatch({ type: 'mediaPush', payload: media })
-                break
-            case MediaService.SoundCloud:
-                if (media.id) {
-                    await getStreamUrl([media.id]).then((data) =>
-                        dispatch({
-                            type: 'mediaPush',
-                            payload: {
-                                id: data[0].id,
-                                url: data[0].url,
-                                type: MediaService.SoundCloud,
-                                title: media.title,
-                                description: media.description,
-                                coverUrl: data[0].coverUrl,
-                            },
-                        })
-                    )
-                }
-                break
-            default:
-                break
-        }
     }
 
     const onChangeArea = useCallback((event) => {
@@ -106,13 +69,7 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
             dispatch({ type: 'queueClear' })
             setIsFetching(true)
             for (let circle of circles.slice(index)) {
-                try {
-                    if (circle.media) {
-                        await queueMedia({ ...circle.media, title: circle.name, description: circle.description })
-                    }
-                } catch (error) {
-                    console.error('API error in resolving stream URL')
-                }
+                if (circle.media) dispatch({ type: 'mediaPush', payload: circle.media })
             }
             setIsFetching(false)
         },

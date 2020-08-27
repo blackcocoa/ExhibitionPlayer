@@ -36,7 +36,7 @@ exports.getStreamUrl = functions.region('us-central1').https.onCall(async (data,
         try {
             media.push(await getItById(id))
         } catch (error) {
-            throw new HttpsError('INTERNAL', `Error while getting ${trackId}`, { trackId: trackId })
+            // continue
         }
     }
     return media
