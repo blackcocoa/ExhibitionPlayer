@@ -54,7 +54,7 @@ function MyApp({ Component, pageProps }: Props) {
                 {state.isLoading ? (
                     <>
                         <div className="loadmask">
-                            <CircularProgress />
+                            <CircularProgress color="secondary" />
                         </div>
                         <style jsx>{`
                             .loadmask {

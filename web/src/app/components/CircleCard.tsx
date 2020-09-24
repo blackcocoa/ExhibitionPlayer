@@ -42,7 +42,7 @@ export const CircleCard: FC<Props> = (props) => {
                     border: 1px solid #666;
                     border-radius: 2px;
                     flex: 0 1 31%;
-                    margin-bottom: 20px;
+                    margin-bottom: 40px;
                     padding: 20px 20px 45px;
                     position: relative;
                     text-align: left;

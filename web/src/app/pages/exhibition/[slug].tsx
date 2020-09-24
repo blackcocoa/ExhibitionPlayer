@@ -37,19 +37,21 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
     }, [isPlaying, isFetching, state])
 
     const getNextCircle = async () => {
+        setIsFetching(true)
+
         const nextCircles = await circleResource.next()
         if (!nextCircles.length) {
             console.log('End')
+            dispatch({ type: 'loadingEnd' })
             return
         }
         if (isPlaying) {
-            setIsFetching(true)
             for (let c of nextCircles) {
                 if (c.media) dispatch({ type: 'mediaPush', payload: c.media })
             }
-            setIsFetching(false)
         }
         setCircles(circles.concat(nextCircles))
+        setIsFetching(false)
     }
 
     const onChangeArea = useCallback((event) => {
@@ -94,7 +96,11 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
         dispatch({ type: 'loadingEnd' })
     }, [area, order, orderBy])
 
-    const onClickNext = useCallback(getNextCircle, [circles])
+    const onClickNext = useCallback(() => {
+        dispatch({ type: 'loading' })
+        getNextCircle()
+        dispatch({ type: 'loadingEnd' })
+    }, [circles])
 
     return (
         <App>
@@ -145,7 +151,9 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
                 })}
             </ul>
 
-            <button onClick={() => onClickNext()}>Next</button>
+            <Button variant="contained" onClick={() => onClickNext()}>
+                もっと見る
+            </Button>
 
             <style jsx>{`
                 h1 {

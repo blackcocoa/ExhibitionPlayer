@@ -14,9 +14,9 @@ export class ExhibitionList {
         const snapshot = await this.db.collection('exhibitions').get()
 
         let exhibitions = []
-        snapshot.forEach(doc => {
+        snapshot.forEach((doc) => {
             const data = doc.data()
-            const e = new Exhibition(doc.id, data.name)
+            const e = new Exhibition(doc.id, data.name, data.slug)
             exhibitions.push(e)
         })
 

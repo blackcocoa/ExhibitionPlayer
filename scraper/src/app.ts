@@ -9,9 +9,11 @@ require('dotenv').config()
 
 const client = new TwitterClient()
 
-const sleep = msec => new Promise(resolve => setTimeout(resolve, msec))
+const sleep = (msec) => new Promise((resolve) => setTimeout(resolve, msec))
 
 async function go() {
+    await client.getBearerToken()
+
     const db = new Firestore()
     try {
         await db.login()
