@@ -44,11 +44,7 @@ export class CircleList {
                     url: circle.media.url,
                 }
             }
-            const ref = this.db
-                .collection('exhibitions')
-                .doc(this.exhibition.id)
-                .collection('circles')
-                .doc()
+            const ref = this.db.collection('exhibitions').doc(this.exhibition.id).collection('circles').doc()
             batch.set(ref, params)
         }
         try {

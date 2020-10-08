@@ -10,9 +10,11 @@ export class Media {
     title?: string
     description?: string
     coverUrl?: string
+    reliability: number
     constructor(url: string) {
         this.url = url
         this.id = null
         this.type = null
+        this.reliability = 0
     }
 }

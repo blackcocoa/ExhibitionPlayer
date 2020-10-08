@@ -4,4 +4,5 @@ export interface TwitterTimeline {
     user: { id: number; screenName: string; name: string; description: string }
     tweets: Tweet[]
     urls: string[]
+    reliability: number
 }

@@ -3,7 +3,7 @@ import { Media } from '../../../shared/Media'
 import Soundcloud from 'soundcloud.ts'
 
 export class MediaFactory {
-    static async create(urls: string[]): Promise<Media> {
+    static async create(urls: string[], reliability: number): Promise<Media> {
         for (let url of urls) {
             try {
                 const id = await MediaFactory.getMediaId(url)
@@ -11,6 +11,7 @@ export class MediaFactory {
                     id: id,
                     type: MediaFactory.getMediaType(url),
                     url: url,
+                    reliability: reliability,
                 }
             } catch (error) {
                 continue
@@ -26,7 +27,7 @@ export class MediaFactory {
             const id = await soundcloud.resolve.get(url)
             return id
         } else if ((result = url.match(/^https?:\/\/(?:youtu\.be|www\.youtube\.com)\/(.*)/im))) {
-            return result[1]
+            return result[1].replace('c/', '').replace('user/', '').replace('/', '')
         } else throw new Error("Couldn't detece media ID")
     }
 
