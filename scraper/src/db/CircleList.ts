@@ -13,6 +13,29 @@ export class CircleList {
         this.db = db
     }
 
+    async fetchAll(): Promise<{ id: string, data: Circle }[]> {
+        if (!this.exhibition) throw new Error("Exhibition not set")
+
+        try {
+            const snapshot = await this.db.collection('exhibitions').doc(this.exhibition.id).collection('circles').get()
+
+            if (snapshot.empty) return []
+
+            let circles: { id: string, data: Circle }[] = []
+            snapshot.forEach((doc) => {
+                circles.push({ id: doc.id, data: <Circle>doc.data() })
+            })
+
+            return circles
+        } catch (error) {
+            console.error("Error getting circles: ", error)
+        }
+    }
+
+    async update(id: string, data: any) {
+        await this.db.collection('exhibitions').doc(this.exhibition.id).collection('circles').doc(id).update(data)
+    }
+
     add(circles: Circle[]): void {
         this.circles = circles
     }
@@ -42,6 +65,7 @@ export class CircleList {
                     id: circle.media.id,
                     type: circle.media.type,
                     url: circle.media.url,
+                    reliability: circle.media.reliability,
                 }
             }
             const ref = this.db.collection('exhibitions').doc(this.exhibition.id).collection('circles').doc()

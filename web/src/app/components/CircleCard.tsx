@@ -79,14 +79,11 @@ export const CircleCard: FC<Props> = (props) => {
                     0% {
                         background-color: rgba(255, 255, 255, 0);
                     }
-                    38% {
-                        background-color: rgba(255, 255, 255, 0.12);
+                    22% {
+                        background-color: rgba(255, 255, 255, 0.18);
                     }
-                    50% {
-                        background-color: rgba(255, 255, 255, 0.2);
-                    }
-                    62% {
-                        background-color: rgba(255, 255, 255, 0.12);
+                    44% {
+                        background-color: rgba(255, 255, 255, 0.35);
                     }
                     100% {
                         background-color: rgba(255, 255, 255, 0);

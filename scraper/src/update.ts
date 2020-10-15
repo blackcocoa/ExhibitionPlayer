@@ -1,4 +1,3 @@
-import { M32020AutumnScraper } from './circle/M32020AutumnScraper'
 import { TwitterClient, RateLimitError } from './sns/TwitterClient'
 import { Log } from './debug/Log'
 import { CircleList } from './db/CircleList'
@@ -27,21 +26,24 @@ async function go() {
     const exhibition = exhibitions.find((e) => e.name === 'M3 2020秋')
     circles.setExhibition(exhibition)
 
-    const scraper = new M32020AutumnScraper(exhibition)
-    circles.add(await scraper.fetch())
-    client.setPeriod(new Date('2020-9-25 00:00:00'), new Date('2020-10-25 23:59:59'))
+    const result = await circles.fetchAll()
 
-    for (let i = 0; i < circles.circles.length; i++) {
-        const id = circles.circles[i].twitterId
-        if (!id) continue
+    for (let i = 0; i < result.length; i++) {
+        const { id, data } = result[i]
+        if (!data.twitterId) continue
 
-        Log.print(`Fetching ${id}`)
+        Log.print(`Fetching ${data.twitterId}`)
 
         try {
-            const timeline = await client.fetch(id)
-            if (timeline && timeline.urls.length) {
-                circles.circles[i].media = await MediaFactory.create(timeline.urls, timeline.reliability)
-            }
+            const timeline = await client.fetch(data.twitterId)
+            if (!timeline || !timeline.urls.length || (timeline.reliability && timeline.reliability >= 0.6)) continue
+
+            const media = await MediaFactory.create(timeline.urls, timeline.reliability)
+            if (!media) continue
+            console.log(media)
+            circles.update(id, {
+                media: media
+            })
         } catch (error) {
             if (error instanceof RateLimitError) {
                 Log.print('Rate limit exceeded. waiting for 15 minutes...')
@@ -50,7 +52,6 @@ async function go() {
             }
         }
     }
-    await circles.save()
 
     Log.print('Finished!')
 }

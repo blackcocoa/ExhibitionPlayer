@@ -10,6 +10,8 @@ interface RawTweet {
     text: string
     created_at: string
     reliability: number
+    retweeted_status?: object
+    quoted_status?: object
     entities: {
         urls: [{ expanded_url: string }]
     }
@@ -21,9 +23,14 @@ export class TwitterClient {
     static MAX_TWEET_NUM = 10
     client: any
     token: string | null
-    since: Date
-    until: Date
+    since: Date | null
+    until: Date | null
 
+    /**
+     *
+     * @param since Date
+     * @param until Date
+     */
     constructor() {
         this.client = new Twitter({
             version: '1.1',
@@ -33,8 +40,8 @@ export class TwitterClient {
             // access_token_secret: 'fd6y9KQ3U4ksWmlrarBOllS9mdmgJOzDDcXPwMpHs1t4f',
         })
         this.token = null
-        this.since = new Date('2020-9-25 00:00:00')
-        this.until = new Date('2020-10-25 23:59:59')
+        this.since = null
+        this.until = null
     }
 
     private getAvailableUrls(response: RawTweet[]): { urls: string[]; reliability: number } {
@@ -71,10 +78,15 @@ export class TwitterClient {
     private onGetTimeline(tweets: RawTweet[]): TwitterTimeline {
         //TODO: twitter-lite type hinting
         const urls = this.getAvailableUrls(tweets)
+
         return {
             user: null,
             tweets: tweets
                 .filter((raw) => {
+                    return !raw.retweeted_status && !raw.quoted_status
+                })
+                .filter((raw) => {
+                    if (!this.since || !this.until) return true
                     const d = new Date(raw.created_at)
                     return this.since < d && d < this.until
                 })
@@ -108,6 +120,16 @@ export class TwitterClient {
         }
     }
 
+    /**
+     *
+     * @param since Date
+     * @param until Date
+     */
+    setPeriod(since, until) {
+        this.since = since
+        this.until = until
+    }
+
     async getBearerToken() {
         const response = await this.client.getBearerToken()
 
@@ -130,6 +152,8 @@ export class TwitterClient {
                 await this.client.get('statuses/user_timeline', {
                     screen_name: username,
                     trim_user: true,
+                    exclude_replies: true,
+                    include_rts: false,
                     count: 200,
                 })
             ).map((t) => ({ ...t, reliability: 0.3 }))

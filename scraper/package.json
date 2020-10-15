@@ -2,7 +2,8 @@
     "scripts": {
         "build": "tsc --outDir dist/ts",
         "watch": "tsc --watch --outDir dest",
-        "start": "./node_modules/.bin/ts-node  src/app.ts"
+        "start": "./node_modules/.bin/ts-node  src/app.ts",
+        "update": "./node_modules/.bin/ts-node  src/update.ts"
     },
     "dependencies": {
         "axios": "^0.20.0",

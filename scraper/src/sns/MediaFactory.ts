@@ -22,13 +22,13 @@ export class MediaFactory {
     static async getMediaId(url: string): Promise<string> {
         const soundcloud = new Soundcloud(process.env.SOUNDCLOUD_CLIENT_ID, process.env.SOUNDCLOUD_OAUTH_TOKEN)
         let result
-
         if (url.match(/^https?:\/\/(?:soundcloud\.com)\/(.*)/im)) {
             const id = await soundcloud.resolve.get(url)
             return id
         } else if ((result = url.match(/^https?:\/\/(?:youtu\.be|www\.youtube\.com)\/(.*)/im))) {
-            return result[1].replace('c/', '').replace('user/', '').replace('/', '')
-        } else throw new Error("Couldn't detece media ID")
+            if (/^(channel\/|c\/|user\/|playlist)/.test(result[1])) throw new Error('This is channel URL')
+            return result[1].replace('/', '')
+        } else throw new Error("Couldn't detect media ID")
     }
 
     static getMediaType(url: string): MediaService {
@@ -36,6 +36,6 @@ export class MediaFactory {
             return MediaService.SoundCloud
         } else if (url.match(/^https?:\/\/(?:soundcloud\.com|youtu\.be|www\.youtube\.com)\/(.*)/i)) {
             return MediaService.YouTube
-        } else throw new Error("Couldn't detece media type")
+        } else throw new Error("Couldn't detect media type")
     }
 }

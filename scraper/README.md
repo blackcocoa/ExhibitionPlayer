@@ -2,7 +2,7 @@
 
 ## Export Firestore
 
-gcloud beta firestore export gs://soundscraper-d0273
+gcloud firestore export gs://soundscraper-d0273.appspot.com
 
 ## Import
 

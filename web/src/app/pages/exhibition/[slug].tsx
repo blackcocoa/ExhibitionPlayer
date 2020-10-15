@@ -113,6 +113,7 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
                         <FormControlLabel value="" control={<Radio />} label="すべて" />
                         <FormControlLabel value="第一展示場" control={<Radio />} label="第一展示場" />
                         <FormControlLabel value="第二展示場" control={<Radio />} label="第二展示場" />
+                        <FormControlLabel value="Web展示場" control={<Radio />} label="Web展示場" />
                     </RadioGroup>
                 </FormControl>
 
