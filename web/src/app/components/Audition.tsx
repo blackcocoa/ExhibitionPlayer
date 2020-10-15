@@ -76,7 +76,7 @@ const Audition: FC<Props> = () => {
             coverUrl = queue[0].coverUrl || ''
             break
         case MediaService.YouTube:
-            src = `https://www.youtube.com/watch?v=${queue[0].id}`
+            src = queue[0].url
             isSoundOnly = false
             break
         default:

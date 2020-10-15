@@ -28,22 +28,23 @@ async function go() {
 
     const result = await circles.fetchAll()
 
+    Log.print(`Circle List fetched. updating media...`)
+
     for (let i = 0; i < result.length; i++) {
         const { id, data } = result[i]
         if (!data.twitterId) continue
-
-        Log.print(`Fetching ${data.twitterId}`)
 
         try {
             const timeline = await client.fetch(data.twitterId)
             if (!timeline || !timeline.urls.length || (timeline.reliability && timeline.reliability >= 0.6)) continue
 
             const media = await MediaFactory.create(timeline.urls, timeline.reliability)
-            if (!media) continue
-            console.log(media)
-            circles.update(id, {
-                media: media
-            })
+            if (media && media.url !== data.media.url) {
+                Log.print(`${data.twitterId}: media updated`)
+                circles.update(id, {
+                    media: media
+                })
+            }
         } catch (error) {
             if (error instanceof RateLimitError) {
                 Log.print('Rate limit exceeded. waiting for 15 minutes...')

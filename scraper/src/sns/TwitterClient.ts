@@ -17,7 +17,7 @@ interface RawTweet {
     }
 }
 
-export class RateLimitError extends Error {}
+export class RateLimitError extends Error { }
 
 export class TwitterClient {
     static MAX_TWEET_NUM = 10
@@ -49,7 +49,6 @@ export class TwitterClient {
         const regexSoundCloud = /^https?:\/\/(?:soundcloud\.com)\/(.*)/i
         response.forEach((rawTweet) => {
             if (!rawTweet?.entities?.urls) return
-
             const u = rawTweet.entities.urls
                 .map((u) => u.expanded_url)
                 .filter((url) => url.match(/^https?:\/\/(?:soundcloud\.com|youtu\.be|www\.youtube\.com)\/(.*)/im))
@@ -60,7 +59,6 @@ export class TwitterClient {
                 createdAt: moment(rawTweet.created_at, 'LLLL ZZ YYYY').unix(),
             })
         })
-
         urls = urls.sort((a, b) => {
             if (a.reliability > b.reliability) return -1
             if (a.reliability < b.reliability) return 1
@@ -69,33 +67,35 @@ export class TwitterClient {
                 if (b.url.match(regexSoundCloud)) return a.createdAt > b.createdAt ? -1 : 1
                 else return -1
             } else if (b.url.match(regexSoundCloud)) return 1
-            else return a.createdAt > b.createdAt ? -1 : 1
-        })
 
+            return a.createdAt > b.createdAt ? -1 : 1
+        })
         return { urls: urls.map((u) => u.url), reliability: urls[0]?.reliability }
     }
 
     private onGetTimeline(tweets: RawTweet[]): TwitterTimeline {
         //TODO: twitter-lite type hinting
+        tweets = tweets
+            .filter((raw) => {
+                return !raw.retweeted_status && !raw.quoted_status
+            })
+            .filter((raw) => {
+                if (!this.since || !this.until) return true
+                const d = new Date(raw.created_at)
+                return this.since < d && d < this.until
+            })
+
         const urls = this.getAvailableUrls(tweets)
 
         return {
             user: null,
-            tweets: tweets
-                .filter((raw) => {
-                    return !raw.retweeted_status && !raw.quoted_status
-                })
-                .filter((raw) => {
-                    if (!this.since || !this.until) return true
-                    const d = new Date(raw.created_at)
-                    return this.since < d && d < this.until
-                })
-                .map((raw) => {
-                    return {
-                        body: raw.text,
-                    }
-                })
-                .slice(0, TwitterClient.MAX_TWEET_NUM),
+            tweets: tweets.map((raw) => {
+                return {
+                    body: raw.text,
+                }
+            })
+                .slice(0, TwitterClient.MAX_TWEET_NUM)
+            ,
             urls: urls.urls,
             reliability: urls.reliability,
         }
