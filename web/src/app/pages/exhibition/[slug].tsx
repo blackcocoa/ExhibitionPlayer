@@ -38,7 +38,7 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
 
     const getNextCircle = async () => {
         setIsFetching(true)
-
+        const limit = parseInt(process.env.CIRCLE_DISPLAY_LIMIT!)
         const nextCircles = await circleResource.next()
         if (!nextCircles.length) {
             console.log('End')
@@ -50,7 +50,12 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
                 if (c.media) dispatch({ type: 'mediaPush', payload: c.media })
             }
         }
-        setCircles(circles.concat(nextCircles))
+        const length = circles.length + nextCircles.length
+        if (length > limit) {
+            setCircles(circles.concat(nextCircles).slice(length - limit, length))
+        } else {
+            setCircles(circles.concat(nextCircles))
+        }
         setIsFetching(false)
     }
 
@@ -113,7 +118,7 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
                         <FormControlLabel value="" control={<Radio />} label="すべて" />
                         <FormControlLabel value="第一展示場" control={<Radio />} label="第一展示場" />
                         <FormControlLabel value="第二展示場" control={<Radio />} label="第二展示場" />
-                        <FormControlLabel value="Web展示場" control={<Radio />} label="Web展示場" />
+                        <FormControlLabel value="Web会場" control={<Radio />} label="Web会場のみ" />
                     </RadioGroup>
                 </FormControl>
 

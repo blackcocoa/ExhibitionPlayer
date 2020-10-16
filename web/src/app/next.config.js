@@ -7,6 +7,7 @@ module.exports = {
         FIREBASE_API_KEY: 'AIzaSyDav5vffiV6v9JovbeBp7LOpPbNggkJvv0',
         SOUNDCLOUD_CLIENT_ID: 'bzhrcLdRzbS6QiVRq8EvMSoMM6p1KhL5',
         DEFAULT_AUDITION_DURATION: 20,
+        CIRCLE_DISPLAY_LIMIT: 198,
         CIRCLE_FETCH_LIMIT: 12,
     },
     webpack: (config, options) => {

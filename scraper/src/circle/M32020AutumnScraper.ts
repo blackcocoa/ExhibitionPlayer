@@ -17,6 +17,7 @@ export class M32020AutumnScraper extends AbstractScraper {
         if (!nameLink) return
 
         const booth = row.children[0].textContent.replace(/\t|\n/g, '')
+
         return {
             booth: {
                 area: this.getArea(booth),
@@ -33,16 +34,17 @@ export class M32020AutumnScraper extends AbstractScraper {
      */
     private getArea(booth) {
         const firstLetter = booth[0]
+
         if (/^[a-zA-Z()]+$/.test(firstLetter)) {
             return '第一展示場'
         }
-        if (firstLetter.indexOf('あ', 'い', 'う', 'え', 'お', 'か')) {
+        if (['あ', 'い', 'う', 'え', 'お', 'か'].indexOf(firstLetter) >= 0) {
             return '第二展示場' //1F
         }
-        if (firstLetter.indexOf('キ', 'ク', 'ケ', 'コ', 'サ', 'シ', 'ス')) {
+        if (['キ', 'ク', 'ケ', 'コ', 'サ', 'シ', 'ス'].indexOf(firstLetter) >= 0) {
             return '第二展示場' //2F
         }
-        if (firstLetter.indexOf('黒', '茶', '赤', '橙', '黄', '緑', '青', '紫', '灰', '白', '銀', '金')) {
+        if (['黒', '茶', '赤', '橙', '黄', '緑', '青', '紫', '灰', '白', '銀', '金'].indexOf(firstLetter) >= 0) {
             return 'Web会場'
         }
     }
