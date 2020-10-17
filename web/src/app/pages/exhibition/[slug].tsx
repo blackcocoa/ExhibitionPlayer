@@ -21,10 +21,11 @@ const db = new Database()
 const circleResource = new CircleResource(db.getInstance())
 
 const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
+    const [init, setInit] = useState<boolean>(false)
     const [circles, setCircles] = useState<Circle[]>([])
     const [isPlaying, setIsPlaying] = useState<boolean>(false)
     const [isFetching, setIsFetching] = useState<boolean>(false)
-    const [area, setArea] = useState<string>('')
+    const [area, setArea] = useState<string>('リアル会場（第一＆第二展示場）')
     const [orderBy, setOrderBy] = useState<string>('booth.number')
     const [order, setOrder] = useState<'desc' | 'asc'>('asc')
     const { state, dispatch } = useContext(AppContext)
@@ -33,8 +34,12 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
     circleResource.setExhibition(exhibition)
 
     useEffect(() => {
+        if (!init) {
+            setInit(true)
+            onClickFetch()
+        }
         if (isPlaying && !isFetching && state.playQueue.length <= 2) getNextCircle()
-    }, [isPlaying, isFetching, state])
+    }, [init, isPlaying, isFetching, state])
 
     const getNextCircle = async () => {
         setIsFetching(true)
@@ -62,6 +67,7 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
     const onChangeArea = useCallback((event) => {
         setArea(event.target.value)
     }, [])
+
     const onChangeOrderBy = useCallback((event) => {
         setOrderBy(event.target.value)
     }, [])
@@ -86,7 +92,12 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
         dispatch({ type: 'loading' })
         circleResource.clearFilter()
         if (area) {
-            circleResource.addFilter('booth.area', '==', area)
+            if (area === 'リアル会場（第一＆第二展示場）') {
+                circleResource.addFilter('booth.area', '!=', 'Web会場')
+                circleResource.orderBy('booth.area', 'asc')
+            } else {
+                circleResource.addFilter('booth.area', '==', area)
+            }
         } else {
             circleResource.orderBy('booth.area', 'asc')
         }
@@ -112,17 +123,21 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
             <h1>{exhibition.name} サークルリスト</h1>
 
             <div className="search">
-                <FormControl component="fieldset" className="hogge">
+                <FormControl component="fieldset">
                     <FormLabel component="legend">展示場</FormLabel>
                     <RadioGroup aria-label="area" name="area" value={area} onChange={onChangeArea}>
-                        <FormControlLabel value="" control={<Radio />} label="すべて" />
+                        <FormControlLabel
+                            value="リアル会場（第一＆第二展示場）"
+                            control={<Radio />}
+                            label="リアル会場（第一＆第二展示場）"
+                        />
                         <FormControlLabel value="第一展示場" control={<Radio />} label="第一展示場" />
                         <FormControlLabel value="第二展示場" control={<Radio />} label="第二展示場" />
-                        <FormControlLabel value="Web会場" control={<Radio />} label="Web会場のみ" />
+                        <FormControlLabel value="Web会場" control={<Radio />} label="Web会場" />
                     </RadioGroup>
                 </FormControl>
 
-                <FormControl component="fieldset" style={{ marginLeft: '30px' }}>
+                <FormControl component="fieldset">
                     <FormLabel component="legend">並び順</FormLabel>
                     <RadioGroup aria-label="area" name="orderBy" value={orderBy} onChange={onChangeOrderBy}>
                         <FormControlLabel value="booth.number" control={<Radio />} label="ブース番号" />
@@ -134,7 +149,7 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
                 </RadioGroup> */}
                 </FormControl>
                 <div className="search-buttons">
-                    <Button variant="contained" onClick={() => onClickFetch()}>
+                    <Button variant="contained" color="primary" disableElevation onClick={() => onClickFetch()}>
                         検索
                     </Button>
                 </div>
@@ -157,7 +172,7 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
                 })}
             </ul>
 
-            <Button variant="contained" onClick={() => onClickNext()}>
+            <Button variant="outlined" disableElevation onClick={() => onClickNext()}>
                 もっと見る
             </Button>
 
@@ -185,12 +200,14 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
                     margin-bottom: 20px;
                 }
                 .search {
-                    background-color: #444;
-                    padding: 20px;
+                    background-color: #f3f3f3;
+                    border: 1px solid #eaeaea;
+                    padding: 30px 40px;
                     margin: 0 auto 40px;
                     text-align: left;
-                    max-width: 480px;
+                    max-width: 560px;
                 }
+
                 .search-buttons {
                     display: flex;
                     justify-content: flex-end;

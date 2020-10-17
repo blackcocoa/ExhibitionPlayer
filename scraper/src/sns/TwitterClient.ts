@@ -34,10 +34,8 @@ export class TwitterClient {
     constructor() {
         this.client = new Twitter({
             version: '1.1',
-            consumer_key: 'DC2s1669PdFGIPkhewWvY3Iir',
-            consumer_secret: 'PorekH4bsUED33NuqsM6XKA25JO4vzQirzjZbmo0GfBM4yj7lR',
-            // access_token_key: '135470684-0XbudyTHeWy68adMUfT4IAykpVK8KUXB8u1E1ZIS',
-            // access_token_secret: 'fd6y9KQ3U4ksWmlrarBOllS9mdmgJOzDDcXPwMpHs1t4f',
+            consumer_key: process.env.TWITTER_CONSUMER_KEY,
+            consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
         })
         this.token = null
         this.since = null
@@ -159,7 +157,7 @@ export class TwitterClient {
             ).map((t) => ({ ...t, reliability: 0.3 }))
             const tagResponse: RawTweet[] = (
                 await this.client.get('search/tweets', {
-                    q: `#M3 OR #M3春 OR #M3秋 from:${username}`,
+                    q: `#M3 OR #M3春 OR #M3秋 OR #M3まとめ from:${username}`,
                 })
             ).statuses.map((t) => ({ ...t, reliability: 0.6 }))
             if (userResponse.data.includes?.tweets?.length) {

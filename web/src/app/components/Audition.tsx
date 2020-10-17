@@ -1,8 +1,9 @@
 import React, { useContext, useState, FC } from 'react'
 import ReactPlayer from 'react-player'
-import { PlayArrow, Stop, FastForward } from '@material-ui/icons'
+import { PlayArrow, Stop, FastForward, Info } from '@material-ui/icons'
 import { Media, MediaService } from '../../../../shared/Media'
 import { reducer, initialState, AppContext } from '../store'
+import * as Scroll from 'react-scroll'
 
 type Props = {}
 
@@ -13,6 +14,8 @@ const Audition: FC<Props> = () => {
     const [playerRef, setPlayerRef] = useState<any>(null)
     const { state, dispatch } = useContext(AppContext)
     const queue = state.playQueue
+
+    const AnchorLink = Scroll.Link
 
     const onReady = () => {
         if (isPlaying) {
@@ -77,6 +80,8 @@ const Audition: FC<Props> = () => {
             break
         case MediaService.YouTube:
             src = queue[0].url
+            title = queue[0].title || ''
+            description = queue[0].description || ''
             isSoundOnly = false
             break
         default:
@@ -121,14 +126,27 @@ const Audition: FC<Props> = () => {
                     <FastForward />
                 </button>
             </div>
+            <div className="show-active">
+                <AnchorLink to="active" className="active-circle">
+                    <Info
+                        style={{
+                            fontSize: '22px',
+                            verticalAlign: '-6px',
+                        }}
+                    />{' '}
+                    {title}
+                </AnchorLink>
+            </div>
             <style jsx>{`
                 dl {
+                    height: 160px;
                     padding: 10px 14px;
                     text-align: left;
                 }
                 dt,
                 dd {
                     background-color: rgba(0, 0, 0, 0.7);
+                    color: white;
                     display: inline-block;
                     padding: 4px 6px;
                 }
@@ -140,7 +158,7 @@ const Audition: FC<Props> = () => {
                     position: fixed;
                     bottom: 0;
                     width: 100%;
-                    height: 200px;
+                    height: 230px;
                     background-color: black;
                     background-size: cover;
                 }
@@ -185,6 +203,17 @@ const Audition: FC<Props> = () => {
                     background-color: white;
                     height: 100%;
                     width: 0%;
+                }
+                .show-active {
+                    background-color: #fafafa;
+                    cursor: pointer;
+                    font-weight: 700;
+                    padding: 4px 20px;
+                    text-align: left;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    word-break: break-all;
+                    white-space: nowrap;
                 }
             `}</style>
         </div>

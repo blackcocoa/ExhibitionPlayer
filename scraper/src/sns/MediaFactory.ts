@@ -1,19 +1,24 @@
 import { MediaService } from '../../../shared/Media'
 import { Media } from '../../../shared/Media'
 import Soundcloud from 'soundcloud.ts'
+import Axios from 'axios'
+
+export class SoundCloudApiKeyError extends Error { }
 
 export class MediaFactory {
     static async create(urls: string[], reliability: number): Promise<Media> {
         for (let url of urls) {
             try {
-                const id = await MediaFactory.getMediaId(url)
                 return {
-                    id: id,
+                    id: await MediaFactory.getMediaId(url),
                     type: MediaFactory.getMediaType(url),
                     url: url,
                     reliability: reliability,
                 }
             } catch (error) {
+                if (error?.response?.status === 403) {
+                    throw new SoundCloudApiKeyError()
+                }
                 continue
             }
         }
@@ -23,8 +28,8 @@ export class MediaFactory {
         const soundcloud = new Soundcloud(process.env.SOUNDCLOUD_CLIENT_ID, process.env.SOUNDCLOUD_OAUTH_TOKEN)
         let result
         if (url.match(/^https?:\/\/(?:soundcloud\.com)\/(.*)/im)) {
-            const id = await soundcloud.resolve.get(url)
-            return id
+            const respose = await Axios.get(`https://api-v2.soundcloud.com/resolve?url=${url}&client_id=${process.env.SOUNDCLOUD_CLIENT_ID}`)
+            return respose.data.id
         } else if ((result = url.match(/^https?:\/\/(?:youtu\.be|www\.youtube\.com)\/(.*)/im))) {
             if (/^(channel\/|c\/|user\/|playlist)/.test(result[1])) throw new Error('This is channel URL')
             return result[1].replace('/', '')

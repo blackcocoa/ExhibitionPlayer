@@ -11,5 +11,6 @@ web/next.config.js
 web/dist
 web/ui-debug.log
 
+**/yarn-error.log
 # Firebase cache
 .firebase

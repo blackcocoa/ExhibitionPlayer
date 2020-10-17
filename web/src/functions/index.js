@@ -46,7 +46,7 @@ async function updateCircle(exhibitionId, circleId, data) {
  */
 
 const getItById = async (trackId) => {
-    const clientId = 'wNHGoG6RrCXPaRsA49blO9sZxs98xaQ6'
+    const clientId = 'BVTnmQP4X7xo1VXiYwZTNAM9swaZthcP'
 
     const response = await axios.get(`https://api-v2.soundcloud.com/tracks/${trackId}?client_id=${clientId}`)
     const transcoding = response.data.media.transcodings.filter((t) => t.format.protocol === 'progressive')

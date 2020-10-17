@@ -24,6 +24,7 @@ async function go() {
     const exhibitions = await exhibitionList.fetchAll()
     const circles = new CircleList(db.db)
     const exhibition = exhibitions.find((e) => e.name === 'M3 2020秋')
+    client.setPeriod(new Date('2020-9-25 00:00:00'), new Date('2020-10-25 23:59:59'))
     circles.setExhibition(exhibition)
 
     const result = await circles.fetchAll()
@@ -35,11 +36,11 @@ async function go() {
         if (!data.twitterId) continue
 
         try {
+            if (data?.media?.reliability >= 0.6) continue
             const timeline = await client.fetch(data.twitterId)
-            if (!timeline || !timeline.urls.length || (timeline.reliability && timeline.reliability >= 0.6)) continue
-
+            if (!timeline || !timeline.urls.length) continue
             const media = await MediaFactory.create(timeline.urls, timeline.reliability)
-            if (media && media.url !== data.media.url) {
+            if (media && media.url !== data?.media?.url) {
                 Log.print(`${data.twitterId}: media updated`)
                 circles.update(id, {
                     media: media

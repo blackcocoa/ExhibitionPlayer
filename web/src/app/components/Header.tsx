@@ -48,7 +48,7 @@ const Header: FC<Props> = () => {
     }, [])
 
     return (
-        <AppBar position="fixed">
+        <AppBar position="fixed" color="default">
             <Toolbar variant="dense">
                 <Link href="/">
                     <h1>
@@ -67,19 +67,35 @@ const Header: FC<Props> = () => {
                         <ul>
                             <li>
                                 {router.pathname === '/' ? (
-                                    <i className="Anchor-body">Home</i>
+                                    <i className="Anchor-body">トップページ</i>
                                 ) : (
                                     <Link href="/">
-                                        <a className="Anchor-body">Home</a>
+                                        <Button size="large" variant="outlined" className="Anchor-body">
+                                            トップページ
+                                        </Button>
                                     </Link>
                                 )}
                             </li>
                             <li>
                                 {router.pathname === '/about' ? (
-                                    <i className="Anchor-body">About this site</i>
+                                    <i className="Anchor-body">このサイトの使いかた</i>
                                 ) : (
                                     <Link href="/about">
-                                        <a className="Anchor-body">About this site</a>
+                                        <Button size="large" variant="outlined" className="Anchor-body">
+                                            このサイトの使いかた
+                                        </Button>
+                                    </Link>
+                                )}
+                            </li>
+
+                            <li>
+                                {router.pathname === '/exhibition/[slug]' && router.query.slug === 'm3-2020-autumn' ? (
+                                    <i className="Anchor-body">M3 2020秋 サークルリスト</i>
+                                ) : (
+                                    <Link href="/exhibition/m3-2020-autumn">
+                                        <Button size="large" variant="outlined" className="Anchor-body">
+                                            M3 2020秋 サークルリスト
+                                        </Button>
                                     </Link>
                                 )}
                             </li>
@@ -106,7 +122,7 @@ const Header: FC<Props> = () => {
                             </dd>
                         </dl>
                     </section>
-                    <Button variant="contained" onClick={() => setIsDrawerOpen(false)}>
+                    <Button variant="contained" color="primary" disableElevation onClick={() => setIsDrawerOpen(false)}>
                         OK
                     </Button>
                 </div>
@@ -114,6 +130,7 @@ const Header: FC<Props> = () => {
 
             <style jsx>{`
                 h1 {
+                    cursor: pointer;
                     flex-grow: 1;
                     text-align: left;
                 }
@@ -124,12 +141,18 @@ const Header: FC<Props> = () => {
                 section {
                     padding: 40px 0;
                 }
+                li {
+                    text-align: center;
+                }
+                li + li {
+                    margin-top: 20px;
+                }
                 .Anchor-body {
                     display: inline-block;
                     padding: 10px;
                 }
                 .drawer {
-                    padding: 60px 20px;
+                    padding: 30px 20px 60px;
                 }
                 .drawer-title {
                     display: block;

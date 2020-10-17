@@ -16,7 +16,7 @@ interface Props {
 
 export const theme = createMuiTheme({
     palette: {
-        type: 'dark',
+        type: 'light',
     },
 })
 

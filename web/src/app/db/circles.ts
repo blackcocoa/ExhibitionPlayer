@@ -61,11 +61,13 @@ export class CircleResource {
 
         return circles.map<Circle>((c) => {
             if (!c.media || !c.media.id) return c
-            const streamUrl = streamUrls.find((u) => u.id === c.media!.id)
-            if (!streamUrl || !streamUrl.url) return c
 
             c.media.title = `${c.name} (${c.booth.area} ${c.booth.number})`
             c.media.description = c.description
+
+            const streamUrl = streamUrls.find((u) => u.id === c.media!.id)
+            if (!streamUrl || !streamUrl.url) return c
+
             c.media.url = streamUrl.url
             c.media.coverUrl = streamUrl.coverUrl
 

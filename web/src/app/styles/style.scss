@@ -4,6 +4,16 @@ main {
     padding: 68px 20px 220px;
 }
 
+p {
+    line-height: 1.7;
+    margin-bottom: 1.5em;
+    text-align: left;
+}
+
+li {
+    text-align: left;
+}
+
 @media screen and (max-width: 640px) {
     main {
         padding-left: 10px;

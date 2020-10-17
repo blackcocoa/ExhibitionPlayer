@@ -2,7 +2,7 @@ import { M32020AutumnScraper } from './circle/M32020AutumnScraper'
 import { TwitterClient, RateLimitError } from './sns/TwitterClient'
 import { Log } from './debug/Log'
 import { CircleList } from './db/CircleList'
-import { MediaFactory } from './sns/MediaFactory'
+import { MediaFactory, SoundCloudApiKeyError } from './sns/MediaFactory'
 import { Firestore } from './db/Firestore'
 import { ExhibitionList } from './db/ExhibitionList'
 require('dotenv').config()
@@ -31,11 +31,11 @@ async function go() {
     circles.add(await scraper.fetch())
     client.setPeriod(new Date('2020-9-25 00:00:00'), new Date('2020-10-25 23:59:59'))
 
+    Log.print(`Circle List fetched. getting media...`)
+
     for (let i = 0; i < circles.circles.length; i++) {
         const id = circles.circles[i].twitterId
         if (!id) continue
-
-        Log.print(`Fetching ${id}`)
 
         try {
             const timeline = await client.fetch(id)
@@ -43,6 +43,11 @@ async function go() {
                 circles.circles[i].media = await MediaFactory.create(timeline.urls, timeline.reliability)
             }
         } catch (error) {
+            if (error instanceof SoundCloudApiKeyError) {
+                Log.print('Soundcloud rejects the request. Please refresh the API Key!')
+                process.exit(-1)
+            }
+
             if (error instanceof RateLimitError) {
                 Log.print('Rate limit exceeded. waiting for 15 minutes...')
                 await sleep(15 * 60 * 1000)

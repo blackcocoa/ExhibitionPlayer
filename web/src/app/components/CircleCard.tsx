@@ -14,7 +14,7 @@ export const CircleCard: FC<Props> = (props) => {
     const circle = props.circle
 
     return (
-        <li className={props.active ? 'active' : ''}>
+        <li className={props.active ? 'active' : ''} id={props.active ? 'active' : ''}>
             <h3>{circle.name}</h3>
 
             <div>
@@ -29,28 +29,40 @@ export const CircleCard: FC<Props> = (props) => {
                         </a>
                     </i>
                 )}
-                {circle.media && (
-                    <Button variant="contained" onClick={() => props.onClickQueue(props.index)}>
-                        ここから再生
-                    </Button>
-                )}
+                <div className="play">
+                    {circle.media ? (
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            disableElevation
+                            onClick={() => props.onClickQueue(props.index)}
+                        >
+                            ここから再生
+                        </Button>
+                    ) : (
+                        <i className="play-empty">視聴音源なし</i>
+                    )}
+                </div>
             </div>
             <style jsx>{`
                 li {
-                    background-color: #444;
-                    box-sizing: border-box;
-                    border: 1px solid #666;
+                    background-color: #f3f3f3;
+                    border: 1px solid #eaeaea;
                     border-radius: 2px;
+                    box-sizing: border-box;
                     flex: 0 1 31%;
-                    margin-bottom: 40px;
-                    padding: 20px 20px 45px;
+                    margin-bottom: 50px;
+                    padding: 20px 20px 70px;
                     position: relative;
                     text-align: left;
                 }
                 h3 {
+                    font-size: 1.08rem;
                     font-weight: 700;
-                    margin-bottom: 10px;
+                    margin-bottom: 12px;
+                    word-break: break-all;
                 }
+
                 p {
                     word-break: break-all;
                 }
@@ -63,11 +75,24 @@ export const CircleCard: FC<Props> = (props) => {
                     bottom: 4px;
                     right: 20px;
                 }
+                .play {
+                    position: absolute;
+                    bottom: 48px;
+                    left: 0;
+                    width: 100%;
+                    height: 40px;
+                    text-align: center;
+                }
+                .play-empty {
+                    color: #999;
+                    font-size: 0.93rem;
+                    line-height: 40px;
+                }
                 .booth-number {
                     position: absolute;
                     bottom: 13px;
                     left: 22px;
-                    color: #ccc;
+                    color: #888;
                     font-size: 0.93rem;
                 }
                 @media screen and (max-width: 767px) {
@@ -77,16 +102,15 @@ export const CircleCard: FC<Props> = (props) => {
                 }
                 @keyframes activeman {
                     0% {
-                        background-color: rgba(255, 255, 255, 0);
+                        background-color: rgba(255, 238, 0, 0);
+                        animation-timing-function: ease-in;
                     }
-                    22% {
-                        background-color: rgba(255, 255, 255, 0.18);
-                    }
-                    44% {
-                        background-color: rgba(255, 255, 255, 0.35);
+                    50% {
+                        background-color: rgba(255, 238, 0, 0.5);
+                        animation-timing-function: ease-out;
                     }
                     100% {
-                        background-color: rgba(255, 255, 255, 0);
+                        background-color: rgba(255, 238, 0, 0);
                     }
                 }
             `}</style>
