@@ -28,8 +28,9 @@ export class MediaFactory {
         const soundcloud = new Soundcloud(process.env.SOUNDCLOUD_CLIENT_ID, process.env.SOUNDCLOUD_OAUTH_TOKEN)
         let result
         if (url.match(/^https?:\/\/(?:soundcloud\.com)\/(.*)/im)) {
-            const respose = await Axios.get(`https://api-v2.soundcloud.com/resolve?url=${url}&client_id=${process.env.SOUNDCLOUD_CLIENT_ID}`)
-            return respose.data.id
+            const response = await Axios.get(`https://api-v2.soundcloud.com/resolve?url=${url}&client_id=${process.env.SOUNDCLOUD_CLIENT_ID}`)
+            if (response.data.kind !== 'track') throw new Error("This is not a track")
+            return response.data.id
         } else if ((result = url.match(/^https?:\/\/(?:youtu\.be|www\.youtube\.com)\/(.*)/im))) {
             if (/^(channel\/|c\/|user\/|playlist)/.test(result[1])) throw new Error('This is channel URL')
             return result[1].replace('/', '')

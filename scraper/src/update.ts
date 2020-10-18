@@ -41,7 +41,7 @@ async function go() {
             if (!timeline || !timeline.urls.length) continue
             const media = await MediaFactory.create(timeline.urls, timeline.reliability)
             if (media && media.url !== data?.media?.url) {
-                Log.print(`${data.twitterId}: media updated`)
+                Log.print(`${data.twitterId} : media updated`)
                 circles.update(id, {
                     media: media
                 })
