@@ -161,7 +161,8 @@ export class TwitterClient {
                 })
             ).statuses.map((t) => ({ ...t, reliability: 0.6 }))
             if (userResponse.data.includes?.tweets?.length) {
-                tweetResponse.unshift({ ...userResponse.data.includes.tweets[0], reliability: 0.5 })
+                const tweet = userResponse.data.includes.tweets[0]
+                tweetResponse.unshift({ ...tweet, reliability: tweet.text.match(/(#M3|#M3春|#M3秋|#M3まとめ)/) ? 0.6 : 0.5 })
             }
             const result = this.onGetTimeline(tagResponse.concat(tweetResponse))
             result.user = {
