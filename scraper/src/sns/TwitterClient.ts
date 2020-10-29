@@ -82,7 +82,6 @@ export class TwitterClient {
                 const d = new Date(raw.created_at)
                 return this.since < d && d < this.until
             })
-
         const urls = this.getAvailableUrls(tweets)
 
         return {
@@ -158,6 +157,7 @@ export class TwitterClient {
             const tagResponse: RawTweet[] = (
                 await this.client.get('search/tweets', {
                     q: `#M3 OR #M3春 OR #M3秋 OR #M3まとめ from:${username}`,
+                    tweet_mode: 'extended'
                 })
             ).statuses.map((t) => ({ ...t, reliability: 0.6 }))
             if (userResponse.data.includes?.tweets?.length) {
@@ -166,10 +166,10 @@ export class TwitterClient {
             }
             const result = this.onGetTimeline(tagResponse.concat(tweetResponse))
             result.user = {
-                id: userResponse.id,
-                screenName: userResponse.username,
-                name: userResponse.name,
-                description: userResponse.description,
+                id: userResponse.data.data.id,
+                screenName: userResponse.data.data.username,
+                name: userResponse.data.data.name,
+                description: userResponse.data.data.description,
             }
             return result
         } catch (error) {

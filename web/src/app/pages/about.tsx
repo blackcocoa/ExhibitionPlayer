@@ -89,6 +89,15 @@ const About: NextPage<Props> = () => {
                     https://www.youtube.com/watch?v=xxxxxxxxxxx」と書いてもらえれば確実です（xxxxxxxxxxxの部分はご自身の動画IDに書き換えてください）。
                 </p>
 
+                <h3>ご注意</h3>
+                <p>
+                    <b>※Twitterにアップロードした動画は抽出対象外です。</b>
+                    <br />
+                    これはTwitter側が動画の外部再生を許可していないためで、Twitterの仕様変更がない限りは技術的に対応できません。
+                    <br />
+                    ツイート埋め込み動画で告知をされる方は多いので残念なのですが、当面はYouTubeかSoundCloudのご利用をお願いします。
+                </p>
+
                 <h3>どうやって音源を取ってきてるの？</h3>
                 <p>
                     サークルのTwitterアカウントから最近のツイートを取得し、ツイート中のYouTubeまたはSoundCloudリンクを抽出しています。

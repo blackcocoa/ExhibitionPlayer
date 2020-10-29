@@ -2,7 +2,7 @@ import React, { useContext, useState, FC } from 'react'
 import ReactPlayer from 'react-player'
 import { PlayArrow, Stop, FastForward, Info } from '@material-ui/icons'
 import { Media, MediaService } from '../../../../shared/Media'
-import { reducer, initialState, AppContext } from '../store'
+import { AppContext } from '../store'
 import * as Scroll from 'react-scroll'
 
 type Props = {}

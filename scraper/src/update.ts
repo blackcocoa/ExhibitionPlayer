@@ -36,21 +36,24 @@ async function go() {
         if (!data.twitterId) continue
 
         try {
-            if (data?.media?.reliability >= 0.6) continue
+            if (data.media && data.media.reliability >= 0.6) continue
             const timeline = await client.fetch(data.twitterId)
             if (!timeline || !timeline.urls.length) continue
             const media = await MediaFactory.create(timeline.urls, timeline.reliability)
-            if (media && media.url !== data?.media?.url) {
-                Log.print(`${data.twitterId} : media updated`)
-                circles.update(id, {
+            if (!media) continue
+            if (!data.media || (media.reliability > data.media.reliability) || (media.url !== data.media.url && media.reliability >= data.media.reliability)) {
+                await circles.update(id, {
                     media: media
                 })
+                Log.print(`${data.twitterId} : media updated`)
             }
         } catch (error) {
             if (error instanceof RateLimitError) {
                 Log.print('Rate limit exceeded. waiting for 15 minutes...')
                 await sleep(15 * 60 * 1000)
                 i--
+            } else {
+                Log.print(error)
             }
         }
     }

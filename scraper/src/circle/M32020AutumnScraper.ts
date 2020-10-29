@@ -53,8 +53,8 @@ export class M32020AutumnScraper extends AbstractScraper {
         const els = el.querySelectorAll('.dropmenu2 > li > ul > li a')
         if (!els?.length) return null
 
-        const urls = Array.from(els, (el) => {
-            const searchResult = el.textContent.match(/https?:\/\/(?:mobile\.)?twitter\.com\/(.*)/im)
+        const urls = Array.from(els, (el: HTMLAnchorElement) => {
+            const searchResult = el.href.match(/https?:\/\/(?:mobile\.)?twitter\.com\/(.*)/im)
             if (!searchResult) return null
             return searchResult[1]
                 .replace(/\t/g, '')
@@ -62,7 +62,6 @@ export class M32020AutumnScraper extends AbstractScraper {
                 .replace('?lang=ja', '')
                 .replace(/[^\x00-\x7E]+/g, '')
         }).filter((link) => link)
-
         return urls.length ? urls[0] : null
     }
 
