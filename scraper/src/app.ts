@@ -58,6 +58,7 @@ async function go() {
     await circles.save()
 
     Log.print('Finished!')
+    process.exit(0)
 }
 
 go()

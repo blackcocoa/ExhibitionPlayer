@@ -42,9 +42,11 @@ export class TwitterClient {
         this.until = null
     }
 
+
     private getAvailableUrls(response: RawTweet[]): { urls: string[]; reliability: number } {
         let urls: any[] = []
         const regexSoundCloud = /^https?:\/\/(?:soundcloud\.com)\/(.*)/i
+
         response.forEach((rawTweet) => {
             if (!rawTweet?.entities?.urls) return
             const u = rawTweet.entities.urls
@@ -83,7 +85,6 @@ export class TwitterClient {
                 return this.since < d && d < this.until
             })
         const urls = this.getAvailableUrls(tweets)
-
         return {
             user: null,
             tweets: tweets.map((raw) => {
@@ -101,7 +102,6 @@ export class TwitterClient {
     private onError(screenName: string, error: any): void {
         if (!error?.response?.status) {
             Log.print(`An unknown error occured when accessing ${screenName}`)
-            console.log(error.response)
             return
         }
         switch (error.response.status) {
@@ -151,9 +151,10 @@ export class TwitterClient {
                     trim_user: true,
                     exclude_replies: true,
                     include_rts: false,
+                    tweet_mode: 'extended',
                     count: 200,
                 })
-            ).map((t) => ({ ...t, reliability: 0.3 }))
+            ).map((t) => ({ ...t, text: t.full_text || t.text, reliability: 0.3 }))
             const tagResponse: RawTweet[] = (
                 await this.client.get('search/tweets', {
                     q: `#M3 OR #M3春 OR #M3秋 OR #M3まとめ from:${username}`,

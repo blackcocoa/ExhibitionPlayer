@@ -2,6 +2,7 @@ import axios from 'axios'
 import { JSDOM } from 'jsdom'
 import { AbstractScraper } from './AbstractScraper'
 import { Circle } from '../../../shared/Circle'
+import { Log } from '../debug/Log'
 
 export class M32020AutumnScraper extends AbstractScraper {
     static LIST_URL: string = 'http://www.m3net.jp/attendance/circle2020f.php'
@@ -72,7 +73,7 @@ export class M32020AutumnScraper extends AbstractScraper {
             const rows = document.querySelectorAll('.tblCircleList tbody tr')
             return Array.prototype.map.call(rows, (r) => this.parseRow(r)).filter((circle) => circle && circle.name)
         } catch (error) {
-            console.error(error)
+            Log.print(error)
         }
     }
 }
