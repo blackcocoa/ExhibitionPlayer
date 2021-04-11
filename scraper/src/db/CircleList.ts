@@ -1,4 +1,4 @@
-import * as firebase from 'firebase/app'
+import firebase from 'firebase/app'
 import 'firebase/firestore'
 import 'firebase/auth'
 import { Circle } from '../../../shared/Circle'
@@ -76,11 +76,12 @@ export class CircleList {
         } catch (error) {
             console.error(error)
         }
+
         await this.batchSave(circles)
     }
 
     async save(): Promise<void> {
-        this.batchSave(this.circles)
+        await this.batchSave(this.circles)
     }
 
     // async saveCircle(circle): Promise<string> {

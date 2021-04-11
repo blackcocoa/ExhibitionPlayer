@@ -3,7 +3,7 @@ const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 const next = require('next')
 const axios = require('axios')
-
+const SOUNDCLOUD_CLIENT_ID = 'sBsbgNTdaqhwPNN5npZXiLAalFrvSI1S'
 admin.initializeApp()
 
 const firestore = admin.firestore()
@@ -46,14 +46,28 @@ async function updateCircle(exhibitionId, circleId, data) {
  */
 
 const getItById = async (trackId) => {
-    const clientId = 'BVTnmQP4X7xo1VXiYwZTNAM9swaZthcP'
-
-    const response = await axios.get(`https://api-v2.soundcloud.com/tracks/${trackId}?client_id=${clientId}`)
+    const response = await axios.get(
+        `https://api-v2.soundcloud.com/tracks/${trackId}?client_id=${SOUNDCLOUD_CLIENT_ID}`
+    )
     const transcoding = response.data.media.transcodings.filter((t) => t.format.protocol === 'progressive')
     if (!transcoding) return res.json({ url: null })
     const coverUrl = response.data.artwork_url || response.data.user.avatar_url
-    const streamResponse = await axios.get(`${transcoding[0].url}?client_id=${clientId}`)
+    const streamResponse = await axios.get(`${transcoding[0].url}?client_id=${SOUNDCLOUD_CLIENT_ID}`)
     return { url: streamResponse.data.url, id: trackId, coverUrl: coverUrl }
+}
+
+const checkSoundCloudTokenHealth = async (context) => {
+    const trackId = '563207157' // https://soundcloud.com/imtenpi/starstruck
+
+    try {
+        const response = await axios.get(
+            `https://api-v2.soundcloud.com/tracks/${trackId}?client_id=${SOUNDCLOUD_CLIENT_ID}`
+        )
+    } catch (error) {
+        console.error(new Error("Error validating the SoundCloud token"))
+    }
+
+    return null
 }
 
 exports.getStreamUrl = functions.region('us-central1').https.onCall(async (data, context) => {
@@ -68,8 +82,7 @@ exports.getStreamUrl = functions.region('us-central1').https.onCall(async (data,
     return media
 })
 
-exports.updateM32020AutumnMedia = functions.pubsub.schedule('every 12 hours').onRun((context) => {
-    console.log("Update Circles' media")
-    //TODO
-    return null
-})
+exports.fetchSoundCloudTokenHealth = functions.region('us-central1').https.onCall(checkSoundCloudTokenHealth)
+
+exports.watchSoundCloudTokenHealth = functions.region('us-central1').pubsub.schedule('every 12 hours').onRun(checkSoundCloudTokenHealth)
+

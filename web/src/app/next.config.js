@@ -10,6 +10,9 @@ module.exports = {
         CIRCLE_DISPLAY_LIMIT: 198,
         CIRCLE_FETCH_LIMIT: 12,
     },
+    future: {
+        webpack5: true,
+    },
     webpack: (config, options) => {
         config.module.rules.push({
             test: /\.ts$/,

@@ -1,9 +1,9 @@
-import firebase, { firestore } from 'firebase/app'
+import firebase from 'firebase/app'
 import 'firebase/firestore'
 import 'firebase/functions'
 
 export class Database {
-    db: firestore.Firestore
+    db: firebase.firestore.Firestore
 
     constructor() {
         const config = {

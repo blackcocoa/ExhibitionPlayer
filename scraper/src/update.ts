@@ -23,8 +23,8 @@ async function go() {
     const exhibitionList = new ExhibitionList(db.db)
     const exhibitions = await exhibitionList.fetchAll()
     const circles = new CircleList(db.db)
-    const exhibition = exhibitions.find((e) => e.name === 'M3 2020秋')
-    client.setPeriod(new Date('2020-9-25 00:00:00'), new Date('2020-10-25 23:59:59'))
+    const exhibition = exhibitions.find((e) => e.name === 'M3 2021春')
+    client.setPeriod(new Date('2021-3-25 00:00:00'), new Date('2021-4-25 23:59:59'))
     circles.setExhibition(exhibition)
 
     const result = await circles.fetchAll()
@@ -58,7 +58,7 @@ async function go() {
         }
     }
 
-    Log.print('Finished!')
+    process.exit(0)
 }
 
 go()

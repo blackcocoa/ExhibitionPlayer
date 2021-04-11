@@ -1,7 +1,9 @@
 .DS_Store
 node_modules/
-firestore-debug.log
+**/*.log
 serviceAccountKey.json
+
+.vscode
 
 scraper/dest/**/*
 scraper/.env
@@ -10,6 +12,7 @@ web/.next/
 web/next.config.js
 web/dist
 web/ui-debug.log
+web/src/app/.next/
 
 **/yarn-error.log
 # Firebase cache

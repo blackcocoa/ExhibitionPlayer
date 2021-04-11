@@ -1,12 +1,12 @@
-import firebase, { firestore } from 'firebase/app'
+import firebase from 'firebase/app'
 import 'firebase/firestore'
 import { Exhibition } from '../../../../shared/Exhibition'
 
 export class ExhibitionResource {
-    db: firestore.Firestore
-    collections: firestore.CollectionReference
+    db: firebase.firestore.Firestore
+    collections: firebase.firestore.CollectionReference
 
-    constructor(db: firestore.Firestore) {
+    constructor(db: firebase.firestore.Firestore) {
         this.db = db
         this.collections = this.db.collection('exhibitions')
     }

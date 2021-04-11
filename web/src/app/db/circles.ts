@@ -1,4 +1,4 @@
-import firebase, { firestore } from 'firebase/app'
+import firebase from 'firebase/app'
 import 'firebase/firestore'
 import { Circle } from '../../../../shared/Circle'
 import { Exhibition } from '../../../../shared/Exhibition'
@@ -7,15 +7,15 @@ import { getStreamUrl } from './stream'
 import { MediaService } from '../../../../shared/Media'
 
 export class CircleResource {
-    db: firestore.Firestore
-    collection: firestore.CollectionReference | undefined
-    query: firestore.Query | undefined
+    db: firebase.firestore.Firestore
+    collection: firebase.firestore.CollectionReference | undefined
+    query: firebase.firestore.Query | undefined
     exhibition: Exhibition | undefined
     filterFields: string[] // To avoid firebase errors if where and orderBy are same
     limit: number
-    last: firestore.DocumentSnapshot | null
+    last: firebase.firestore.DocumentSnapshot | null
 
-    constructor(db: firestore.Firestore) {
+    constructor(db: firebase.firestore.Firestore) {
         this.db = db
         this.limit = (process.env.CIRCLE_FETCH_LIMIT as unknown) as number
         this.last = null
@@ -82,7 +82,7 @@ export class CircleResource {
 
     addFilter(field: string, operator: string, value: string): void {
         if (!this.collection) throw new Error('Exhibition not set')
-        this.query = this.collection.where(field, operator as firestore.WhereFilterOp, value)
+        this.query = this.collection.where(field, operator as firebase.firestore.WhereFilterOp, value)
         this.filterFields.push(field)
     }
 

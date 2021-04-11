@@ -99,6 +99,17 @@ const Header: FC<Props> = () => {
                                     </Link>
                                 )}
                             </li>
+                            <li>
+                                {router.pathname === '/exhibition/[slug]' && router.query.slug === 'm3-2021-spring' ? (
+                                    <i className="Anchor-body">M3 2021春 サークルリスト</i>
+                                ) : (
+                                    <Link href="/exhibition/m3-2021-spring">
+                                        <Button size="large" variant="outlined" className="Anchor-body">
+                                            M3 2021春 サークルリスト
+                                        </Button>
+                                    </Link>
+                                )}
+                            </li>
                         </ul>
                     </section>
                     <Divider />

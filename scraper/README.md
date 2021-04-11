@@ -1,7 +1,8 @@
 # Getting SoundCloud Tokens
 
-1. Manually log into SoundCloud, inspect network and see client_id
+1. Manually sign into SoundCloud, inspect network and see client_id
 2. Inspect cookie and see 'oauth_token'
+3. see 'https://api-auth.soundcloud.com/connect/session?client_id=xxx' for client ID
 
 https://www.npmjs.com/package/soundcloud.ts
 

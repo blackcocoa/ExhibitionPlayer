@@ -50,9 +50,9 @@ const About: NextPage<Props> = () => {
                 <p>
                     まずサークルリストのページに移動します。
                     <br />
-                    <Link href="/exhibition/m3-2020-autumn">
+                    <Link href="/exhibition/m3-2021-spring">
                         <Button size="large" variant="outlined" className="Anchor-body">
-                            M3 2020秋 サークルリスト
+                            M3 2021春 サークルリスト
                         </Button>
                     </Link>
                     <br />

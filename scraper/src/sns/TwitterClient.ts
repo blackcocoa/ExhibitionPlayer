@@ -129,7 +129,6 @@ export class TwitterClient {
 
     async getBearerToken() {
         const response = await this.client.getBearerToken()
-
         this.token = response.access_token
         this.client = new Twitter({
             version: '1.1',
@@ -143,7 +142,7 @@ export class TwitterClient {
         try {
             const userResponse: any = await axios.get(
                 `https://api.twitter.com/2/users/by/username/${username}?expansions=pinned_tweet_id&user.fields=description&tweet.fields=text,created_at,entities`,
-                { headers: { Authorization: 'Bearer ' + this.token }, data: {} }
+                { headers: { Authorization: 'Bearer ' + this.token } }
             )
             const tweetResponse: RawTweet[] = (
                 await this.client.get('statuses/user_timeline', {
