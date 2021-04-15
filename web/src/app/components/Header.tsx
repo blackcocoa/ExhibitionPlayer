@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { AppBar, Toolbar, IconButton, Drawer, Divider, Button } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
+import CloseIcon from '@material-ui/icons/Close';
 import { reducer, initialState, AppContext } from '../store'
 import { BaseSlider } from '../components/BaseSlider'
 import { AppConfig } from '../interfaces/AppConfig'
@@ -28,7 +29,7 @@ const Header: FC<Props> = () => {
         window.addEventListener('configLoad', (e) => {
             const event = e as CustomEvent
             const config: AppConfig = event.detail
-            if (config.auditionDuration) setAuditionDuration(config.auditionDuration)
+            if (config.auditionDuration) setTimeout(() => setAuditionDuration(config.auditionDuration || 0), 300)
         })
     }, [])
 
@@ -39,6 +40,7 @@ const Header: FC<Props> = () => {
     const closeDrawer = useCallback(() => {
         setIsDrawerOpen(false)
     }, [])
+
     const onChangeAuditionDuration = (event: ChangeEvent<{}>, value: number | number[]) => {
         setAuditionDuration(value as number)
     }
@@ -70,7 +72,7 @@ const Header: FC<Props> = () => {
                                     <i className="Anchor-body">トップページ</i>
                                 ) : (
                                     <Link href="/">
-                                        <Button size="large" variant="outlined" className="Anchor-body">
+                                        <Button size="large" variant="outlined" className="Anchor-body" style={{ minWidth: "240px" }}>
                                             トップページ
                                         </Button>
                                     </Link>
@@ -81,7 +83,7 @@ const Header: FC<Props> = () => {
                                     <i className="Anchor-body">このサイトの使いかた</i>
                                 ) : (
                                     <Link href="/about">
-                                        <Button size="large" variant="outlined" className="Anchor-body">
+                                        <Button size="large" variant="outlined" className="Anchor-body" style={{ minWidth: "240px" }}>
                                             このサイトの使いかた
                                         </Button>
                                     </Link>
@@ -89,23 +91,12 @@ const Header: FC<Props> = () => {
                             </li>
 
                             <li>
-                                {router.pathname === '/exhibition/[slug]' && router.query.slug === 'm3-2020-autumn' ? (
-                                    <i className="Anchor-body">M3 2020秋 サークルリスト</i>
+                                {router.pathname === '/exhibition' ? (
+                                    <i className="Anchor-body">即売会一覧</i>
                                 ) : (
-                                    <Link href="/exhibition/m3-2020-autumn">
-                                        <Button size="large" variant="outlined" className="Anchor-body">
-                                            M3 2020秋 サークルリスト
-                                        </Button>
-                                    </Link>
-                                )}
-                            </li>
-                            <li>
-                                {router.pathname === '/exhibition/[slug]' && router.query.slug === 'm3-2021-spring' ? (
-                                    <i className="Anchor-body">M3 2021春 サークルリスト</i>
-                                ) : (
-                                    <Link href="/exhibition/m3-2021-spring">
-                                        <Button size="large" variant="outlined" className="Anchor-body">
-                                            M3 2021春 サークルリスト
+                                    <Link href="/exhibition">
+                                        <Button size="large" variant="outlined" className="Anchor-body" style={{ minWidth: "240px" }}>
+                                            即売会一覧
                                         </Button>
                                     </Link>
                                 )}
@@ -133,9 +124,12 @@ const Header: FC<Props> = () => {
                             </dd>
                         </dl>
                     </section>
-                    <Button variant="contained" color="primary" disableElevation onClick={() => setIsDrawerOpen(false)}>
-                        OK
+                    <Button variant="contained" color="primary" disableElevation onClick={() => setIsDrawerOpen(false)} style={{ minWidth: "200px" }}>
+                        閉じる
                     </Button>
+                    <IconButton onClick={() => setIsDrawerOpen(false)} style={{ position: "absolute", top: "10px", right: "15px" }}>
+                        <CloseIcon />
+                    </IconButton>
                 </div>
             </Drawer>
 
@@ -154,6 +148,9 @@ const Header: FC<Props> = () => {
                 }
                 li {
                     text-align: center;
+                }
+                li button {
+                    min-width: 240px;
                 }
                 li + li {
                     margin-top: 20px;

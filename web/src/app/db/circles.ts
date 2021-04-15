@@ -46,7 +46,9 @@ export class CircleResource {
 
         let circles: Circle[] = []
         snapshot.forEach((doc) => {
-            circles.push(<Circle>doc.data())
+            let c = doc.data()
+            c.id = doc.id
+            circles.push(<Circle>c)
         })
 
         return await this.fetchStreamUrls(circles)
@@ -62,6 +64,7 @@ export class CircleResource {
         return circles.map<Circle>((c) => {
             if (!c.media || !c.media.id) return c
 
+            c.media.circleId = c.id
             c.media.title = `${c.name} (${c.booth.area} ${c.booth.number})`
             c.media.description = c.description
 
@@ -103,5 +106,27 @@ export class CircleResource {
 
     async next(): Promise<Circle[]> {
         return this._fetch()
+    }
+
+    async fetchById(id:string, exhibitionId:string | undefined): Promise<Circle> {
+        if (!exhibitionId) {
+            if (!this.exhibition) {
+                throw new Error('Exhibition not set')
+            }
+            exhibitionId = this.exhibition.id
+        }
+        if (!this.query) {
+            this.query = this.collection
+        }
+
+        const snapshot = await this.db.collection('exhibitions').doc(exhibitionId).collection('circles').doc(id).get()
+        if (!snapshot.exists) throw new Error("not found")
+
+        let circle = <Circle>snapshot.data()
+        if (!circle) throw new Error("not found")
+
+        circle.id = snapshot.id
+
+        return (await this.fetchStreamUrls([circle]))[0]
     }
 }

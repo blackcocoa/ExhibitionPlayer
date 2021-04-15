@@ -2,14 +2,14 @@ import * as React from 'react'
 import { NextPage, GetStaticProps } from 'next'
 import Router from 'next/router'
 import { useState, useCallback, useContext } from 'react'
-import { Database } from '../db/index'
-import { Exhibition } from '../../../../shared/Exhibition'
-import { ExhibitionResource } from '../db/exhibitions'
-import { reducer, initialState, AppContext } from '../store'
-import App from '../components/App'
+import { Database } from '../../db/index'
+import { Exhibition } from '../../../../../shared/Exhibition'
+import { ExhibitionResource } from '../../db/exhibitions'
+import { reducer, initialState, AppContext } from '../../store'
+import App from '../../components/App'
 import Link from 'next/link'
 import { Button } from '@material-ui/core'
-import Footer from '../components/Footer'
+import Footer from '../../components/Footer'
 
 interface Props {
     exhibitions: Exhibition[]
@@ -17,7 +17,7 @@ interface Props {
 
 const db = new Database()
 
-const Index: NextPage<Props> = ({ exhibitions }) => {
+const ExhibitionIndex: NextPage<Props> = ({ exhibitions }) => {
     const { state, dispatch } = useContext(AppContext)
     const onClickExhibition = useCallback((exhibition: Exhibition) => {
         dispatch({ type: 'exhibitionSet', payload: exhibition })
@@ -54,28 +54,6 @@ const Index: NextPage<Props> = ({ exhibitions }) => {
                 次のトラックに進めなかった場合はプレイヤー右下の▶︎▶︎ボタンを押してください。</p>
             </section>
 
-            <section>
-                <h2>なにこのサイト？</h2>
-                <p>
-                    「同人音楽小まとめ」は、「同人音楽超まとめ」が抜けた穴を少しでも埋めるべく作成された音楽即売会の横断視聴アプリです。
-                </p>
-                <p>
-                    新型コロナウィルス感染症への不安がある中、視聴機を不特定多数の来場者と共有することに抵抗を感じる参加者の方もおられると思います。
-                    <br />
-                    このアプリが少しでもみなさんの音楽生活に彩りを加えられれば嬉しいです。
-                </p>
-                <p>
-                    データの取得は全て自動で行っているため、データ精度を上げるためには各サークルの皆様のご協力が不可欠です。
-                    <br />
-                    Twitterを利用しているサークルであればタグ付きツイート1つで対応できますので、ぜひ使い方をご一読ください。
-                </p>
-
-                <p>
-                    <Link href="/about">
-                        <a>使い方を見る</a>
-                    </Link>
-                </p>
-            </section>
             <Footer />
 
             <style jsx>{`
@@ -126,4 +104,4 @@ export const getStaticProps: GetStaticProps = async (context) => {
     return { props: { exhibitions: exhibitions.map((e) => e.serialize()) } }
 }
 
-export default Index
+export default ExhibitionIndex

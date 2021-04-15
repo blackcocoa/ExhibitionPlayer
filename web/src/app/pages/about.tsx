@@ -5,7 +5,7 @@ import Footer from '../components/Footer'
 import Link from 'next/link'
 import { Button } from '@material-ui/core'
 
-interface Props {}
+interface Props { }
 
 const About: NextPage<Props> = () => {
     return (
@@ -91,11 +91,11 @@ const About: NextPage<Props> = () => {
 
                 <h3>ご注意</h3>
                 <p>
-                    <b>※Twitterにアップロードした動画は抽出対象外です。</b>
+                    <b>※Twitterに埋め込み形式でアップロードした動画は抽出対象外です。</b>
                     <br />
                     これはTwitter側が動画の外部再生を許可していないためで、Twitterの仕様変更がない限りは技術的に対応できません。
                     <br />
-                    ツイート埋め込み動画で告知をされる方は多いので残念なのですが、当面はYouTubeかSoundCloudのご利用をお願いします。
+                    ツイート埋め込み動画で告知をされる方は多いので残念なのですが、当面はYouTubeかSoundCloudに音源・動画をアップロードしてTwitterにリンクを貼る形式でお願いします。
                 </p>
 
                 <h3>どうやって音源を取ってきてるの？</h3>

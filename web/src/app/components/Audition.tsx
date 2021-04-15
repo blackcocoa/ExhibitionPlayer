@@ -1,6 +1,8 @@
 import React, { useContext, useState, FC } from 'react'
 import ReactPlayer from 'react-player'
-import { PlayArrow, Stop, FastForward, Info } from '@material-ui/icons'
+import { CircleResource } from '../db/circles'
+import { Database } from '../db/index'
+import { PlayArrow, Stop, FastForward, Info, Favorite } from '@material-ui/icons'
 import { Media, MediaService } from '../../../../shared/Media'
 import { AppContext } from '../store'
 import * as Scroll from 'react-scroll'
@@ -48,6 +50,15 @@ const Audition: FC<Props> = () => {
         }
     }
 
+    const onClickFav = async () => {
+        if (!state.activeExhibition || !queue.length || !queue[0].circleId) return
+
+        const db = new Database()
+        const circleResource = new CircleResource(db.getInstance())
+        const circle = await circleResource.fetchById(queue[0].circleId, state.activeExhibition.id)
+        dispatch({ type: 'favAdd', payload: circle })
+    }
+
     const onClickFwd = () => {
         clearTimeout(nextTimer)
         dispatch({ type: 'queueNext' })
@@ -61,6 +72,12 @@ const Audition: FC<Props> = () => {
         console.error(`Error: ${error}`)
         dispatch({ type: 'queueNext' })
     }
+
+    function isFaved() {
+        if (!queue.length || !queue[0].circleId) return false
+        return state.favCircles.map(c => c.id).indexOf(queue[0].circleId) >= 0
+    }
+
     let src: string,
         isSoundOnly: boolean = false,
         title: string = '',
@@ -122,6 +139,10 @@ const Audition: FC<Props> = () => {
                 <div className="progress" onClick={onClickProgress}>
                     <div className="progress-played" style={{ width: `${100 * progress}%` }}></div>
                 </div>
+
+                <button className="fav" onClick={onClickFav} style={{ color: isFaved() ? '#ff7d89' : '#ffffff' }}>
+                    <Favorite />
+                </button>
                 <button className="fwd" onClick={onClickFwd}>
                     <FastForward />
                 </button>
@@ -175,7 +196,8 @@ const Audition: FC<Props> = () => {
                     padding: 0 10px;
                 }
                 .play,
-                .fwd {
+                .fwd,
+                .fav {
                     background-color: transparent;
                     border: none;
                     color: white;
@@ -190,7 +212,7 @@ const Audition: FC<Props> = () => {
                 .fwd:hover {
                     color: #ccc;
                 }
-                .fwd {
+                .fav {
                     margin-right: 0;
                     margin-left: 10px;
                 }

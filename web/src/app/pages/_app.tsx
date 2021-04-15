@@ -26,11 +26,10 @@ function MyApp({ Component, pageProps }: Props) {
 
     useEffect(() => {
         let payload: AppConfig = {}
-        let savedValue = localStorage.getItem('auditionDuration')
-        if (savedValue) {
-            payload.auditionDuration = parseInt(savedValue)
+        let auditionDuration = localStorage.getItem('auditionDuration')
+        if (auditionDuration) {
+            payload.auditionDuration = parseInt(auditionDuration)
         }
-
         dispatch({ type: 'configLoad', payload: payload })
     }, [])
 

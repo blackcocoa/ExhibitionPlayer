@@ -1,6 +1,9 @@
 import * as React from 'react'
 import { NextPage, GetStaticProps, GetStaticPaths } from 'next'
 import { useState, useCallback, useContext, useEffect } from 'react'
+import { FormControl, FormLabel, Checkbox, RadioGroup, FormControlLabel, Radio, Button } from '@material-ui/core'
+import IconButton from '@material-ui/core/IconButton';
+import { Favorite } from '@material-ui/icons';
 import { Database } from '../../db/index'
 import { CircleResource } from '../../db/circles'
 import { ExhibitionResource } from '../../db/exhibitions'
@@ -9,7 +12,7 @@ import { Circle } from '../../../../../shared/Circle'
 import { AppContext } from '../../store'
 import App from '../../components/App'
 import { CircleCard } from '../../components/CircleCard'
-import { FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Button } from '@material-ui/core'
+import FavView from '../../components/FavView';
 
 interface Props {
     id: string
@@ -25,21 +28,48 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
     const [circles, setCircles] = useState<Circle[]>([])
     const [isPlaying, setIsPlaying] = useState<boolean>(false)
     const [isFetching, setIsFetching] = useState<boolean>(false)
+    const [isExcludeUnrelated, setIsExcludeUnrelated] = useState<boolean>(false)
     const [area, setArea] = useState<string>('リアル会場（第一＆第二展示場）')
     const [orderBy, setOrderBy] = useState<string>('booth.number')
     const [order, setOrder] = useState<'desc' | 'asc'>('asc')
+    const [exhibition, setExhibition] = useState<Exhibition>(new Exhibition(id, name, slug))
     const { state, dispatch } = useContext(AppContext)
 
-    const exhibition = new Exhibition(id, name, slug)
     circleResource.setExhibition(exhibition)
+
+    useEffect(() => {
+        dispatch({ type: 'exhibitionSet', payload: exhibition })
+    }, [])
 
     useEffect(() => {
         if (!init) {
             setInit(true)
+            dispatch({ type: 'queueClear' })
             onClickFetch()
         }
         if (isPlaying && !isFetching && state.playQueue.length <= 2) getNextCircle()
     }, [init, isPlaying, isFetching, state])
+
+    useEffect(() => {
+        const f = async () => {
+            let str = localStorage.getItem('favCircles')
+            if (str) {
+                let circles: Circle[] = []
+                for (let id of str.split(',')) {
+                    let [exhibitionId, circleId] = id.split(':')
+                    if (exhibitionId !== exhibition.id) continue
+                    try {
+                        const circle = await circleResource.fetchById(circleId, exhibitionId)
+                        if (circle) circles.push(circle)
+                    } catch (error) {
+                        console.log(`${circleId} not found`)
+                    }
+                }
+                dispatch({ type: 'favLoad', payload: circles })
+            }
+        }
+        f()
+    }, [])
 
     const getNextCircle = async () => {
         setIsFetching(true)
@@ -52,6 +82,8 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
         }
         if (isPlaying) {
             for (let c of nextCircles) {
+                if (!c.media) continue
+                if (isExcludeUnrelated && c.media.reliability <= 0.3) continue
                 if (c.media) dispatch({ type: 'mediaPush', payload: c.media })
             }
         }
@@ -80,7 +112,9 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
             setIsFetching(true)
             setCircles(await circleResource.fetchStreamUrls(circles))
             for (let circle of circles.slice(index)) {
-                if (circle.media) dispatch({ type: 'mediaPush', payload: circle.media })
+                if (!circle.media) continue
+                if (isExcludeUnrelated && circle.media.reliability <= 0.3) continue
+                dispatch({ type: 'mediaPush', payload: circle.media })
             }
             setIsFetching(false)
             dispatch({ type: 'loadingEnd' })
@@ -118,6 +152,10 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
         dispatch({ type: 'loadingEnd' })
     }, [circles])
 
+    const handleClickFav = useCallback(() => {
+        dispatch({ type: 'favOpen' })
+    }, [])
+
     return (
         <App>
             <h1>{exhibition.name} サークルリスト</h1>
@@ -148,7 +186,14 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
                     <FormControlLabel value="desc" control={<Radio />} label="降順" />
                 </RadioGroup> */}
                 </FormControl>
+                <div className="search-options">
+                    <FormControlLabel
+                        control={<Checkbox checked={isExcludeUnrelated} onChange={(event) => setIsExcludeUnrelated(event.target.checked)} name="excludeUnrelated" />}
+                        label="即売会と関係なさそうな音源をスキップする"
+                    />
+                </div>
                 <div className="search-buttons">
+
                     <Button variant="contained" color="primary" disableElevation onClick={() => onClickFetch()}>
                         検索
                     </Button>
@@ -175,6 +220,12 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
             <Button variant="outlined" disableElevation onClick={() => onClickNext()}>
                 もっと見る
             </Button>
+
+            <IconButton style={{ position: 'fixed', bottom: state.playQueue.length ? '250px' : '20px', right: '20px', backgroundColor: "#ffffff", boxShadow: '0 0 10px rgba(0,0,0,0.15)', border: '1px solid #eee' }} color="secondary" aria-label="Favorites" onClick={() => handleClickFav()}>
+                <Favorite />
+            </IconButton>
+
+            <FavView />
 
             <style jsx>{`
                 h1 {
@@ -207,10 +258,13 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
                     text-align: left;
                     max-width: 560px;
                 }
-
+                .search-options {
+                    margin-top: 20px;
+                }
                 .search-buttons {
                     display: flex;
                     justify-content: flex-end;
+                    align-items: center;
                 }
             `}</style>
         </App>
