@@ -42,7 +42,7 @@ async function go() {
         try {
             const timeline = await client.fetch(id)
             if (timeline && timeline.urls.length) {
-                circles.circles[i].media = await MediaFactory.create(timeline.urls, timeline.reliability)
+                circles.circles[i].media = await MediaFactory.create(timeline.urls, timeline.reliability, circles.circles[i].id)
             }
         } catch (error) {
             if (error instanceof SoundCloudApiKeyError) {

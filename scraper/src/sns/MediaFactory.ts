@@ -6,10 +6,11 @@ import Axios from 'axios'
 export class SoundCloudApiKeyError extends Error { }
 
 export class MediaFactory {
-    static async create(urls: string[], reliability: number): Promise<Media> {
+    static async create(urls: string[], reliability: number, circleId: string): Promise<Media> {
         for (let url of urls) {
             try {
                 return {
+                    circleId,
                     id: await MediaFactory.getMediaId(url),
                     type: MediaFactory.getMediaType(url),
                     url: url,

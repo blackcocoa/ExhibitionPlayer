@@ -39,7 +39,7 @@ async function go() {
             if (data.media && data.media.reliability >= 0.6) continue
             const timeline = await client.fetch(data.twitterId)
             if (!timeline || !timeline.urls.length) continue
-            const media = await MediaFactory.create(timeline.urls, timeline.reliability)
+            const media = await MediaFactory.create(timeline.urls, timeline.reliability, id)
             if (!media) continue
             if (!data.media || (media.reliability > data.media.reliability) || (media.url !== data.media.url && media.reliability >= data.media.reliability)) {
                 await circles.update(id, {

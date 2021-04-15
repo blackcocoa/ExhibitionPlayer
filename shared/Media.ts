@@ -5,6 +5,7 @@ export enum MediaService {
 
 export class Media {
     id: string | null
+    circleId: string | null
     type: MediaService | null
     url: string
     title?: string
@@ -14,6 +15,7 @@ export class Media {
     constructor(url: string) {
         this.url = url
         this.id = null
+        this.circleId = null
         this.type = null
         this.reliability = 0
     }
