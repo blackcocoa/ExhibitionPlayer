@@ -30,6 +30,10 @@ function MyApp({ Component, pageProps }: Props) {
         if (auditionDuration) {
             payload.auditionDuration = parseInt(auditionDuration)
         }
+        let isExcludeUnrelated = localStorage.getItem('isExcludeUnrelated')
+        if (isExcludeUnrelated !== null) {
+            payload.isExcludeUnrelated = !!isExcludeUnrelated
+        }
         dispatch({ type: 'configLoad', payload: payload })
     }, [])
 

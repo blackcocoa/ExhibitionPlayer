@@ -28,7 +28,6 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
     const [circles, setCircles] = useState<Circle[]>([])
     const [isPlaying, setIsPlaying] = useState<boolean>(false)
     const [isFetching, setIsFetching] = useState<boolean>(false)
-    const [isExcludeUnrelated, setIsExcludeUnrelated] = useState<boolean>(false)
     const [area, setArea] = useState<string>('リアル会場（第一＆第二展示場）')
     const [orderBy, setOrderBy] = useState<string>('booth.number')
     const [order, setOrder] = useState<'desc' | 'asc'>('asc')
@@ -83,7 +82,6 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
         if (isPlaying) {
             for (let c of nextCircles) {
                 if (!c.media) continue
-                if (isExcludeUnrelated && c.media.reliability <= 0.3) continue
                 if (c.media) dispatch({ type: 'mediaPush', payload: c.media })
             }
         }
@@ -113,7 +111,6 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
             setCircles(await circleResource.fetchStreamUrls(circles))
             for (let circle of circles.slice(index)) {
                 if (!circle.media) continue
-                if (isExcludeUnrelated && circle.media.reliability <= 0.3) continue
                 dispatch({ type: 'mediaPush', payload: circle.media })
             }
             setIsFetching(false)
@@ -186,12 +183,7 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
                     <FormControlLabel value="desc" control={<Radio />} label="降順" />
                 </RadioGroup> */}
                 </FormControl>
-                <div className="search-options">
-                    <FormControlLabel
-                        control={<Checkbox checked={isExcludeUnrelated} onChange={(event) => setIsExcludeUnrelated(event.target.checked)} name="excludeUnrelated" />}
-                        label="即売会と関係なさそうな音源をスキップする"
-                    />
-                </div>
+
                 <div className="search-buttons">
 
                     <Button variant="contained" color="primary" disableElevation onClick={() => onClickFetch()}>

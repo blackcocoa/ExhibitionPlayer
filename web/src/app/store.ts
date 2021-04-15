@@ -12,6 +12,7 @@ export interface State {
     activeExhibition: Exhibition | null
     playQueue: Media[]
     auditionDuration: number,
+    isExcludeUnrelated: boolean,
     favCircles: Circle[],
     isFavViewOpen: boolean,
     isLoading: boolean
@@ -21,6 +22,7 @@ export const initialState: State = {
     activeExhibition: null,
     playQueue: [],
     auditionDuration: parseInt(process.env.DEFAULT_AUDITION_DURATION),
+    isExcludeUnrelated: false,
     favCircles: [],
     isFavViewOpen: false,
     isLoading: false,
@@ -33,7 +35,7 @@ export interface IContextProps {
 
 export const AppContext = React.createContext({} as IContextProps)
 
-export const reducer = (state: any, action: any) => {
+export const reducer = (state: State, action: any) => {
     switch (action.type) {
         case 'loading': {
             return { ...state, isLoading: true }
@@ -45,6 +47,7 @@ export const reducer = (state: any, action: any) => {
             const config = action.payload as AppConfig
             let s:State = { ...state }
             if (config.auditionDuration) s.auditionDuration = config.auditionDuration
+            if (config.isExcludeUnrelated) s.isExcludeUnrelated = config.isExcludeUnrelated
             if (window) {
                 window.dispatchEvent(
                     new CustomEvent('configLoad', {
@@ -80,7 +83,15 @@ export const reducer = (state: any, action: any) => {
         }
         case 'queueNext': {
             const queue = [...state.playQueue]
-            if (queue.length) queue.shift()
+
+            while (queue.length) {
+                queue.shift()
+                if (!queue.length) break
+
+                if (state.isExcludeUnrelated && queue[0].reliability <= 0.3) continue
+                break
+            }
+            
             return { ...state, playQueue: queue }
         }
         case 'updateSetting': {
@@ -89,6 +100,11 @@ export const reducer = (state: any, action: any) => {
                 let d = parseInt(action.payload.auditionDuration)
                 s.auditionDuration = d
                 localStorage.setItem('auditionDuration', d.toString())
+            }
+            if (typeof action.payload.isExcludeUnrelated !== 'undefined') {
+                let d = !!action.payload.isExcludeUnrelated
+                s.isExcludeUnrelated = d
+                localStorage.setItem('isExcludeUnrelated', d ? '1' : '')
             }
 
             return s

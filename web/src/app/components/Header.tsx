@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect, FC, useCallback, ChangeEvent } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { AppBar, Toolbar, IconButton, Drawer, Divider, Button } from '@material-ui/core'
+import { AppBar, Toolbar, IconButton, Checkbox, Drawer, Divider, Button, FormControlLabel } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
 import CloseIcon from '@material-ui/icons/Close';
 import { reducer, initialState, AppContext } from '../store'
@@ -13,6 +13,7 @@ type Props = {}
 const Header: FC<Props> = () => {
     const { state, dispatch } = useContext(AppContext)
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
+    const [isExcludeUnrelated, setIsExcludeUnrelated] = useState<boolean>(state ? state.isExcludeUnrelated : false)
     const [auditionDuration, setAuditionDuration] = useState<number>(state ? state.auditionDuration : 600)
     const router = useRouter()
     const durationMarks = [
@@ -30,6 +31,7 @@ const Header: FC<Props> = () => {
             const event = e as CustomEvent
             const config: AppConfig = event.detail
             if (config.auditionDuration) setTimeout(() => setAuditionDuration(config.auditionDuration || 0), 300)
+            if (config.isExcludeUnrelated) setTimeout(() => setIsExcludeUnrelated(config.isExcludeUnrelated || false), 300)
         })
     }, [])
 
@@ -48,6 +50,11 @@ const Header: FC<Props> = () => {
     const onChangeCommitedAuditionDuration = useCallback((event, value) => {
         dispatch({ type: 'updateSetting', payload: { auditionDuration: value } })
     }, [])
+
+    const onChangeExcludeUnrelated = (value: boolean) => {
+        setIsExcludeUnrelated(value)
+        dispatch({ type: 'updateSetting', payload: { isExcludeUnrelated: value } })
+    }
 
     return (
         <AppBar position="fixed" color="default">
@@ -123,6 +130,11 @@ const Header: FC<Props> = () => {
                                 />
                             </dd>
                         </dl>
+
+                        <FormControlLabel
+                            control={<Checkbox checked={isExcludeUnrelated} onChange={(event) => onChangeExcludeUnrelated(event.target.checked)} name="excludeUnrelated" />}
+                            label="即売会と関係なさそうな音源をスキップする"
+                        />
                     </section>
                     <Button variant="contained" color="primary" disableElevation onClick={() => setIsDrawerOpen(false)} style={{ minWidth: "200px" }}>
                         閉じる
