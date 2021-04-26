@@ -86,6 +86,9 @@ const FavView: FC<Props> = () => {
                         </div>
                     ))}
                 </List>
+                {!state.favCircles.length ? (
+                    <p>お気に入りサークルが無いか、ロード中です。<br />すでに作成したお気に入りリストがある場合は10秒ほど待ってみてください。</p>
+                ) : <></>}
             </MuiDialogContent>
             <style jsx>{`
                 h1 {

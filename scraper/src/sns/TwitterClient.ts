@@ -112,7 +112,7 @@ export class TwitterClient {
             case 429:
                 throw new RateLimitError()
             default:
-                Log.print(`An unknown error occured when accessing ${screenName} (Code: ${error.status})`)
+                Log.print(`An unknown error occured when accessing ${screenName} (Code: ${error?.response?.status})`)
                 return
         }
     }
