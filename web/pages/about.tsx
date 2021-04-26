@@ -48,10 +48,9 @@ const About: NextPage<Props> = () => {
                 <h2>サイトのつかいかた（一般参加者・視聴者の方）</h2>
 
                 <p>
-                    まずサークルリストのページに移動します。
-                    <br />
+                    まずサークルリストのページに移動します。 <br />
                     <Link href="/exhibition/m3-2021-spring">
-                        <Button size="large" variant="outlined" className="Anchor-body">
+                        <Button size="large" variant="outlined" style={{ margin: "20px auto" }}>
                             M3 2021春 サークルリスト
                         </Button>
                     </Link>
@@ -59,8 +58,7 @@ const About: NextPage<Props> = () => {
                     検索欄で視聴したい展示場を選択し、「検索」を押してください。
                 </p>
                 <p>
-                    サークルリストが表示されるので、視聴したいサークルを選んで「ここから再生」を押してください。
-                    <br />
+                    サークルリストが表示されるので、視聴したいサークルを選んで「ここから再生」を押してください。 <br />
                     ※音源が取得できているサークルのみ再生ボタンが表示されます。
                     再生開始後、一定時間で次のサークルが再生されます。
                 </p>
@@ -148,6 +146,10 @@ const About: NextPage<Props> = () => {
                 }
                 li + li {
                     margin-top: 20px;
+                }
+                .center {
+                    display: block;
+                    margin: 10px auto;
                 }
             `}</style>
             <Footer />

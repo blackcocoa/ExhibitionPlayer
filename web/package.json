@@ -5,9 +5,9 @@
     "license": "UNLICENSED",
     "private": true,
     "scripts": {
-        "dev": "next -p 3562 src/app/",
+        "dev": "next -p 3562",
         "build": "next build",
-        "deploy": "NODE_ENV=production firebase deploy",
+        "deploy": "NODE_ENV=production firebase deploy only:functions",
         "emulators": "NODE_ENV=production firebase emulators:start",
         "clean": "rimraf \"dist/functions/**\" && rimraf dist/public",
         "install-deps": "cp src/functions/package.json dist/functions/package.json && cd dist/functions && yarn"
