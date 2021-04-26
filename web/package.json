@@ -2,6 +2,8 @@
     "name": "soundscraper-app",
     "version": "0.1.1",
     "description": "Audition app for M3",
+    "license": "UNLICENSED",
+    "private": true,
     "engines": {
         "node": "14"
     },

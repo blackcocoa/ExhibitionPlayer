@@ -1,6 +1,6 @@
 module.exports = {
     cssModules: true,
-    distDir: '../../dist/functions/next',
+    // distDir: '../../dist/functions/next',
     env: {
         FIREBASE_PROJECT_ID: 'soundscraper-d0273',
         FIREBASE_APP_ID: '1:749064670057:web:de74f3411864b9695f4bf8',
