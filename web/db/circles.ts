@@ -1,10 +1,10 @@
 import firebase from 'firebase/app'
 import 'firebase/firestore'
-import { Circle } from '../../../../shared/Circle'
-import { Exhibition } from '../../../../shared/Exhibition'
-import { SoundCloudStreamUrl } from '../../../../shared/SoundCloudStreamUrl'
+import { Circle } from '../../shared/Circle'
+import { Exhibition } from '../../shared/Exhibition'
+import { SoundCloudStreamUrl } from '../../shared/SoundCloudStreamUrl'
 import { getStreamUrl } from './stream'
-import { MediaService } from '../../../../shared/Media'
+import { MediaService } from '../../shared/Media'
 
 export class CircleResource {
     db: firebase.firestore.Firestore

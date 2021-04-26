@@ -4,12 +4,9 @@
     "description": "Audition app for M3",
     "license": "UNLICENSED",
     "private": true,
-    "engines": {
-        "node": "14"
-    },
     "scripts": {
         "dev": "next -p 3562 src/app/",
-        "build": "next build src/app/",
+        "build": "next build",
         "deploy": "NODE_ENV=production firebase deploy",
         "emulators": "NODE_ENV=production firebase emulators:start",
         "clean": "rimraf \"dist/functions/**\" && rimraf dist/public",

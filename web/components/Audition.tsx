@@ -3,7 +3,7 @@ import ReactPlayer from 'react-player'
 import { CircleResource } from '../db/circles'
 import { Database } from '../db/index'
 import { PlayArrow, Stop, FastForward, Info, Favorite } from '@material-ui/icons'
-import { Media, MediaService } from '../../../../shared/Media'
+import { Media, MediaService } from '../../shared/Media'
 import { AppContext } from '../store'
 import * as Scroll from 'react-scroll'
 

@@ -1,7 +1,5 @@
 import firebase from 'firebase/app'
 import 'firebase/firestore'
-import { Circle } from '../../../../shared/Circle'
-import { Exhibition } from '../../../../shared/Exhibition'
 
 export const getStreamUrl = async (trackId: string[]) => {
     const config = {

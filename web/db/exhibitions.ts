@@ -1,6 +1,6 @@
 import firebase from 'firebase/app'
 import 'firebase/firestore'
-import { Exhibition } from '../../../../shared/Exhibition'
+import { Exhibition } from '../../shared/Exhibition'
 
 export class ExhibitionResource {
     db: firebase.firestore.Firestore

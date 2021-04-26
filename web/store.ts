@@ -1,8 +1,8 @@
 import React from 'react'
-import { Media } from '../../../shared/Media'
-import { Circle } from '../../../shared/Circle'
+import { Media } from '../shared/Media'
+import { Circle } from '../shared/Circle'
 import { AppConfig } from './interfaces/AppConfig'
-import { Exhibition } from '../../../shared/Exhibition'
+import { Exhibition } from '../shared/Exhibition'
 
 if (!process.env.DEFAULT_AUDITION_DURATION) {
     throw new Error('env not set properly')
