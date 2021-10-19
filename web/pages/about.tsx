@@ -1,67 +1,48 @@
 import * as React from 'react'
-import App from '../components/App'
-import { NextPage } from 'next'
-import Footer from '../components/Footer'
-import Link from 'next/link'
 import { Button } from '@material-ui/core'
+import { NextPage } from 'next'
+import Link from 'next/link'
+import App from '../components/App'
+import Footer from '../components/Footer'
+import { useTranslation } from '../i18n'
 
 interface Props { }
 
 const About: NextPage<Props> = () => {
+    const lang = useTranslation()
+
     return (
         <App>
             <section>
-                <h1>同人音楽小まとめとは</h1>
+                <h1>{lang.ABOUT.TITLE}</h1>
+                {lang.ABOUT.BODY.map(txt => (<p>{txt}</p>))}
                 <p>
-                    「同人音楽小まとめ」は、「同人音楽超まとめ」がいなくなった穴を少しでも埋めるべく作成された音楽即売会の横断視聴アプリです。
-                </p>
-                <p>
-                    音楽即売会の横断視聴サイトとして多くの音楽ファンに重宝された「同人音楽超まとめ」。
-                    <br />
-                    同人誌の即売会と比べ、現地での「試し読み」の敷居が高い音楽即売会では事前視聴がとても有意義なこと、また同等の機能を持つサイトがいまだに現れていないこともあり、
-                    閉鎖から何年も経った今でも復活を望む声が後を絶ちません。
-                </p>
-                <p>
-                    また、新型コロナウィルス感染症への不安がある中、視聴機を不特定多数の来場者と共有することに抵抗を感じる参加者の方もおられると思います。
-                    <br />
-                    このアプリが少しでもみなさんの音楽生活に彩りを加えられれば嬉しいです。
-                </p>
-                <p>
-                    データの取得は全て自動で行っているため、データ精度を上げるためには各サークルの皆様のご協力が不可欠です。
-                    <br />
-                    Twitterを運営しているサークルであれば1ツイートで対応できます！
-                </p>
-                <p>
-                    <a href="#circle">参加サークル向けガイド</a>
+                    <a href="#circle">{lang.ABOUT.GUIDE_CIRCLE}</a>
                 </p>
 
                 <p>
-                    掲載即売会は現時点でM3のみですが、対応してほしい即売会があれば
+                    {lang.ABOUT.CONTACT_US} <br />
                     <a href="https://twitter.com/sakusabedragon/" target="_blank">
-                        管理人
+                        Twitter
                     </a>
-                    までお知らせください。機能要望などもできる範囲でお応えしたく思います。
                 </p>
             </section>
 
             <section>
-                <h2>サイトのつかいかた（一般参加者・視聴者の方）</h2>
+                <h2>{lang.ABOUT.VISITORS_SUBTITLE}</h2>
 
                 <p>
-                    まずサークルリストのページに移動します。 <br />
+                    {lang.ABOUT.VISITORS_BODY1}<br />
+
                     <Link href="/exhibition/m3-2021-spring">
                         <Button size="large" variant="outlined" style={{ margin: "20px auto" }}>
                             M3 2021春 サークルリスト
                         </Button>
                     </Link>
-                    <br />
-                    検索欄で視聴したい展示場を選択し、「検索」を押してください。
                 </p>
-                <p>
-                    サークルリストが表示されるので、視聴したいサークルを選んで「ここから再生」を押してください。 <br />
-                    ※音源が取得できているサークルのみ再生ボタンが表示されます。
-                    再生開始後、一定時間で次のサークルが再生されます。
-                </p>
+
+                <p>{lang.ABOUT.VISITORS_BODY2.map(txt => (<>{txt}<br /></>))}</p>
+
                 <p>
                     各音源の再生時間は20秒に設定されています。
                     <br />

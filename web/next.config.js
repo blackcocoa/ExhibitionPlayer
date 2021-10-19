@@ -10,6 +10,10 @@ module.exports = {
         CIRCLE_DISPLAY_LIMIT: 198,
         CIRCLE_FETCH_LIMIT: 12,
     },
+    i18n: {
+        locales: ["en", "ja"],
+        defaultLocale: "ja",
+    },
     future: {
         webpack5: true,
     },

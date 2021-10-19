@@ -1,4 +1,4 @@
-import { M32021SpringScraper } from './circle/M32021SpringScraper'
+import { M32021AutumnScraper } from './circle/M32021AutumnScraper'
 import { TwitterClient, RateLimitError } from './sns/TwitterClient'
 import { Log } from './debug/Log'
 import { CircleList } from './db/CircleList'
@@ -24,15 +24,13 @@ async function go() {
     const exhibitionList = new ExhibitionList(db.db)
     const exhibitions = await exhibitionList.fetchAll()
     const circles = new CircleList(db.db)
-    const exhibition = exhibitions.find((e) => e.name === 'M3 2021春')
+    const exhibition = exhibitions.find((e) => e.name === 'M3 2021秋')
     circles.setExhibition(exhibition)
 
-    
-    const scraper = new M32021SpringScraper(exhibition)
+    const scraper = new M32021AutumnScraper(exhibition)
     circles.add(await scraper.fetch())
-    client.setPeriod(new Date('2021-3-25 00:00:00'), new Date('2021-4-25 23:59:59'))
+    client.setPeriod(new Date('2021-10-08 00:00:00'), new Date('2021-10-31 23:59:59'))
 
-    
     Log.print(`Circle List fetched. getting media...`)
 
     for (let i = 0; i < circles.circles.length; i++) {
@@ -42,7 +40,11 @@ async function go() {
         try {
             const timeline = await client.fetch(id)
             if (timeline && timeline.urls.length) {
-                circles.circles[i].media = await MediaFactory.create(timeline.urls, timeline.reliability, circles.circles[i].id)
+                circles.circles[i].media = await MediaFactory.create(
+                    timeline.urls,
+                    timeline.reliability,
+                    circles.circles[i].id
+                )
             }
         } catch (error) {
             if (error instanceof SoundCloudApiKeyError) {

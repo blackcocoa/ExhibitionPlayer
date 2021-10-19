@@ -1,10 +1,10 @@
 import React, { useReducer, useEffect, Dispatch } from 'react'
 import Head from 'next/head'
-import Audition from '../components/Audition'
+import Player from '../components/Player'
 import { reducer } from '../store'
 import { CssBaseline, CircularProgress } from '@material-ui/core'
 import { ThemeProvider } from '@material-ui/styles'
-import { createMuiTheme } from '@material-ui/core/styles'
+import { createTheme } from '@material-ui/core/styles'
 import '../styles/style.scss'
 import { AppConfig } from '../interfaces/AppConfig'
 import { IContextProps, AppContext, initialState } from '../store'
@@ -14,7 +14,7 @@ interface Props {
     pageProps: any
 }
 
-export const theme = createMuiTheme({
+export const theme = createTheme({
     palette: {
         type: 'light',
     },
@@ -53,7 +53,7 @@ function MyApp({ Component, pageProps }: Props) {
                     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" key="icon" />
                 </Head>
                 <Component {...pageProps} />
-                <Audition />
+                <Player />
                 {state.isLoading ? (
                     <>
                         <div className="loadmask">

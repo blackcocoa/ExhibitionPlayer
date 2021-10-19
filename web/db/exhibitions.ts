@@ -12,10 +12,10 @@ export class ExhibitionResource {
     }
 
     async fetch() {
-        const snapshot = await this.collections.get()
+        const snapshot = await this.collections.orderBy('createdAt', 'desc').get()
 
         let exhibitions: Exhibition[] = []
-        snapshot.forEach(doc => {
+        snapshot.forEach((doc) => {
             const data = doc.data()
             exhibitions.push(new Exhibition(doc.id, data.name, data.slug))
         })

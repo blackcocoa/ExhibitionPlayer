@@ -11,10 +11,10 @@ if (!process.env.DEFAULT_AUDITION_DURATION) {
 export interface State {
     activeExhibition: Exhibition | null
     playQueue: Media[]
-    auditionDuration: number,
-    isExcludeUnrelated: boolean,
-    favCircles: Circle[],
-    isFavViewOpen: boolean,
+    auditionDuration: number
+    isExcludeUnrelated: boolean
+    favCircles: Circle[]
+    isFavViewOpen: boolean
     isLoading: boolean
 }
 
@@ -45,7 +45,7 @@ export const reducer = (state: State, action: any) => {
         }
         case 'configLoad': {
             const config = action.payload as AppConfig
-            let s:State = { ...state }
+            let s: State = { ...state }
             if (config.auditionDuration) s.auditionDuration = config.auditionDuration
             if (config.isExcludeUnrelated) s.isExcludeUnrelated = config.isExcludeUnrelated
             if (window) {
@@ -64,13 +64,13 @@ export const reducer = (state: State, action: any) => {
             return { ...state, playQueue: [action.payload] }
         }
         case 'mediaPlayNow': {
-            let s:State = { ...state }
+            let s: State = { ...state }
             if (!action.payload) return s
 
-            s.playQueue = s.playQueue.filter(m => m.circleId !== action.payload.circleId)
+            s.playQueue = s.playQueue.filter((m) => m.circleId !== action.payload.circleId)
             s.playQueue.shift()
             s.playQueue.unshift(action.payload)
-          
+
             return s
         }
         case 'mediaPush': {
@@ -91,11 +91,11 @@ export const reducer = (state: State, action: any) => {
                 if (state.isExcludeUnrelated && queue[0].reliability <= 0.3) continue
                 break
             }
-            
+
             return { ...state, playQueue: queue }
         }
         case 'updateSetting': {
-            let s:State = { ...state }
+            let s: State = { ...state }
             if (action.payload.auditionDuration) {
                 let d = parseInt(action.payload.auditionDuration)
                 s.auditionDuration = d
@@ -110,19 +110,36 @@ export const reducer = (state: State, action: any) => {
             return s
         }
         case 'favOpen': {
-            return {...state, isFavViewOpen: true}
+            return { ...state, isFavViewOpen: true }
         }
         case 'favClose': {
-            return {...state, isFavViewOpen: false}
+            return { ...state, isFavViewOpen: false }
         }
         case 'favLoad': {
-            return  { ...state, favCircles: action.payload }
+            return {
+                ...state,
+                favCircles: action.payload.sort((a: Circle, b: Circle) => {
+                    if (a.booth.area > b.booth.area) return 1
+                    if (a.booth.area < b.booth.area) return -1
+                    if (a.booth.number > b.booth.number) return 1
+                    if (a.booth.number < b.booth.number) return -1
+                    return 0
+                }),
+            }
         }
         case 'favAdd': {
-            let s:State = { ...state }
+            let s: State = { ...state }
             if (!action.payload || !action.payload.id) return s
 
-            if (s.favCircles.map(c => c.id).indexOf(action.payload.id) < 0) s.favCircles.push(action.payload)
+            if (s.favCircles.map((c) => c.id).indexOf(action.payload.id) < 0) s.favCircles.push(action.payload)
+
+            s.favCircles.sort((a: Circle, b: Circle) => {
+                if (a.booth.area > b.booth.area) return 1
+                if (a.booth.area < b.booth.area) return -1
+                if (a.booth.number > b.booth.number) return 1
+                if (a.booth.number < b.booth.number) return -1
+                return 0
+            })
 
             if (s.activeExhibition) {
                 const newId = `${s.activeExhibition!.id}:${action.payload.id}`
@@ -134,16 +151,16 @@ export const reducer = (state: State, action: any) => {
             return s
         }
         case 'favRemove': {
-            let s:State = { ...state }
+            let s: State = { ...state }
             if (!action.payload || !action.payload.id) return s
 
-            s.favCircles = s.favCircles.filter(c => c.id !== action.payload.id)
+            s.favCircles = s.favCircles.filter((c) => c.id !== action.payload.id)
 
             let old = localStorage.getItem('favCircles')
             if (old && s.activeExhibition) {
                 let favs = old.split(',')
                 const newId = `${s.activeExhibition!.id}:${action.payload.id}`
-                localStorage.setItem('favCircles', favs.filter(f => f !== newId).join(','))
+                localStorage.setItem('favCircles', favs.filter((f) => f !== newId).join(','))
             }
             return s
         }
