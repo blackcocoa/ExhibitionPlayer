@@ -17,7 +17,7 @@ interface RawTweet {
     }
 }
 
-export class RateLimitError extends Error { }
+export class RateLimitError extends Error {}
 
 export class TwitterClient {
     static MAX_TWEET_NUM = 10
@@ -41,7 +41,6 @@ export class TwitterClient {
         this.since = null
         this.until = null
     }
-
 
     private getAvailableUrls(response: RawTweet[]): { urls: string[]; reliability: number } {
         let urls: any[] = []
@@ -87,20 +86,20 @@ export class TwitterClient {
         const urls = this.getAvailableUrls(tweets)
         return {
             user: null,
-            tweets: tweets.map((raw) => {
-                return {
-                    body: raw.text,
-                }
-            })
-                .slice(0, TwitterClient.MAX_TWEET_NUM)
-            ,
+            tweets: tweets
+                .map((raw) => {
+                    return {
+                        body: raw.text,
+                    }
+                })
+                .slice(0, TwitterClient.MAX_TWEET_NUM),
             urls: urls.urls,
             reliability: urls.reliability,
         }
     }
 
     private onError(screenName: string, error: any): void {
-        if (!error?.response?.status) {
+        if (!error || !error.response || !error.response.status) {
             Log.print(`An unknown error occured when accessing ${screenName}`)
             return
         }
@@ -157,12 +156,15 @@ export class TwitterClient {
             const tagResponse: RawTweet[] = (
                 await this.client.get('search/tweets', {
                     q: `#M3 OR #M3春 OR #M3秋 OR #M3まとめ from:${username}`,
-                    tweet_mode: 'extended'
+                    tweet_mode: 'extended',
                 })
             ).statuses.map((t) => ({ ...t, reliability: 0.6 }))
             if (userResponse.data.includes?.tweets?.length) {
                 const tweet = userResponse.data.includes.tweets[0]
-                tweetResponse.unshift({ ...tweet, reliability: tweet.text.match(/(#M3|#M3春|#M3秋|#M3まとめ)/) ? 0.6 : 0.5 })
+                tweetResponse.unshift({
+                    ...tweet,
+                    reliability: tweet.text.match(/(#M3|#M3春|#M3秋|#M3まとめ)/) ? 0.6 : 0.5,
+                })
             }
             const result = this.onGetTimeline(tagResponse.concat(tweetResponse))
             result.user = {

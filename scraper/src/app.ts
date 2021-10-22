@@ -24,12 +24,12 @@ async function go() {
     const exhibitionList = new ExhibitionList(db.db)
     const exhibitions = await exhibitionList.fetchAll()
     const circles = new CircleList(db.db)
-    const exhibition = exhibitions.find((e) => e.name === 'M3 2021秋')
+    const exhibition = exhibitions.find((e) => e.slug === M32021AutumnScraper.ID)
     circles.setExhibition(exhibition)
 
     const scraper = new M32021AutumnScraper(exhibition)
     circles.add(await scraper.fetch())
-    client.setPeriod(new Date('2021-10-08 00:00:00'), new Date('2021-10-31 23:59:59'))
+    client.setPeriod(M32021AutumnScraper.PERIOD[0], M32021AutumnScraper.PERIOD[1])
 
     Log.print(`Circle List fetched. getting media...`)
 

@@ -5,7 +5,9 @@ import { Circle } from '../../../shared/Circle'
 import { Log } from '../debug/Log'
 
 export class M32021AutumnScraper extends AbstractScraper {
-    static LIST_URL: string = 'http://www.m3net.jp/attendance/circle2021aW.php'
+    static LIST_URL: string = 'http://www.m3net.jp/attendance/circle2021aR.php'
+    static PERIOD: [Date, Date] = [new Date('2021-10-08 00:00:00'), new Date('2021-10-31 23:59:59')]
+    static ID: string = 'm3-2021-autumn'
 
     constructor(exhibition) {
         super()

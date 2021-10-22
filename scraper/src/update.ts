@@ -1,17 +1,21 @@
+import { M32021AutumnScraper } from './circle/M32021AutumnScraper'
 import { TwitterClient, RateLimitError } from './sns/TwitterClient'
 import { Log } from './debug/Log'
 import { CircleList } from './db/CircleList'
 import { MediaFactory } from './sns/MediaFactory'
 import { Firestore } from './db/Firestore'
 import { ExhibitionList } from './db/ExhibitionList'
+import { YouTubeClient } from './sns/YouTubeClient'
+import { Media, MediaService } from '../../shared/Media'
 require('dotenv').config()
 
-const client = new TwitterClient()
+const twitterClient = new TwitterClient()
+const youtubeClient = new YouTubeClient()
 
 const sleep = (msec) => new Promise((resolve) => setTimeout(resolve, msec))
 
 async function go() {
-    await client.getBearerToken()
+    await twitterClient.getBearerToken()
 
     const db = new Firestore()
     try {
@@ -23,8 +27,8 @@ async function go() {
     const exhibitionList = new ExhibitionList(db.db)
     const exhibitions = await exhibitionList.fetchAll()
     const circles = new CircleList(db.db)
-    const exhibition = exhibitions.find((e) => e.name === 'M3 2021春')
-    client.setPeriod(new Date('2021-3-25 00:00:00'), new Date('2021-4-25 23:59:59'))
+    const exhibition = exhibitions.find((e) => e.slug === M32021AutumnScraper.ID)
+    twitterClient.setPeriod(M32021AutumnScraper.PERIOD[0], M32021AutumnScraper.PERIOD[1])
     circles.setExhibition(exhibition)
 
     const result = await circles.fetchAll()
@@ -33,28 +37,46 @@ async function go() {
 
     for (let i = 0; i < result.length; i++) {
         const { id, data } = result[i]
-        if (!data.twitterId) continue
-
-        try {
-            if (data.media && data.media.reliability >= 0.6) continue
-            const timeline = await client.fetch(data.twitterId)
-            if (!timeline || !timeline.urls.length) continue
-            const media = await MediaFactory.create(timeline.urls, timeline.reliability, id)
-            if (!media) continue
-            if (!data.media || (media.reliability > data.media.reliability) || (media.url !== data.media.url && media.reliability >= data.media.reliability)) {
-                await circles.update(id, {
-                    media: media
-                })
-                Log.print(`${data.twitterId} : media updated`)
+        if (data.twitterId) {
+            try {
+                if (data.media && data.media.reliability >= 0.6) continue
+                const timeline = await twitterClient.fetch(data.twitterId)
+                if (!timeline || !timeline.urls.length) continue
+                const media = await MediaFactory.create(timeline.urls, timeline.reliability, id)
+                if (!media) continue
+                if (
+                    !data.media ||
+                    media.reliability > data.media.reliability ||
+                    (media.url !== data.media.url && media.reliability >= data.media.reliability)
+                ) {
+                    await circles.update(id, {
+                        media: media,
+                    })
+                    Log.print(`${data.twitterId} : media updated`)
+                }
+            } catch (error) {
+                if (error instanceof RateLimitError) {
+                    Log.print('Rate limit exceeded. waiting for 15 minutes...')
+                    await sleep(15 * 60 * 1000)
+                    i--
+                } else {
+                    Log.print(error)
+                }
             }
-        } catch (error) {
-            if (error instanceof RateLimitError) {
-                Log.print('Rate limit exceeded. waiting for 15 minutes...')
-                await sleep(15 * 60 * 1000)
-                i--
-            } else {
-                Log.print(error)
+        } else if (data.youtubeId) {
+            const movieId = await youtubeClient.fetch(data.youtubeId)
+            if (!movieId) continue
+            const media: Media = {
+                circleId: id,
+                id: movieId,
+                type: MediaService.YouTube,
+                url: `https://youtu.be/${movieId}`,
+                reliability: 0.5,
             }
+            await circles.update(id, {
+                media: media,
+            })
+            Log.print(`${id} : media updated`)
         }
     }
 

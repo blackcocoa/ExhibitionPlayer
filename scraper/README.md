@@ -4,6 +4,7 @@
 2. Inspect cookie and see 'oauth_token'
 3. see 'https://api-auth.soundcloud.com/connect/session?client_id=xxx' for client ID
 
+https://soundcloud.com/hello1103/grace-takako
 https://www.npmjs.com/package/soundcloud.ts
 
 # Backup
