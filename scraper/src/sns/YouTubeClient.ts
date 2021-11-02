@@ -5,10 +5,12 @@ import axios from 'axios'
 export class YouTubeClient {
     apiKey: string
     searchWords: string[]
+    period: [Date, Date]
 
     constructor() {
         this.apiKey = process.env.YOUTUBE_API_KEY
         this.searchWords = []
+        this.period = [new Date('1970-1-1 00:00:00'), new Date('2099-12-31 23:59:59')]
     }
 
     private isRelated(name: string) {
@@ -24,6 +26,10 @@ export class YouTubeClient {
 
     setSearchWords(words: string[]) {
         this.searchWords = words
+    }
+
+    setPeriod(since: Date, until: Date) {
+        this.period = [since, until]
     }
 
     async fetchChannelId(username: string): Promise<string> {
@@ -48,8 +54,12 @@ export class YouTubeClient {
             for (let item of response.data.items) {
                 let title = item.snippet.title
                 let description = item.snippet.description
-                if (this.isRelated(title) || this.isRelated(description)) {
-                    //TODO
+                const publishedAt = new Date(item.snippet.publishedAt)
+                if (
+                    this.period[0] < publishedAt &&
+                    publishedAt < this.period[1] &&
+                    (this.isRelated(title) || this.isRelated(description))
+                ) {
                     return item.id.videoId
                 }
             }

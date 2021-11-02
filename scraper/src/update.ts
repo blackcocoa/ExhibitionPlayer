@@ -30,6 +30,7 @@ async function go() {
     const exhibition = exhibitions.find((e) => e.slug === M32021AutumnScraper.ID)
     twitterClient.setPeriod(M32021AutumnScraper.PERIOD[0], M32021AutumnScraper.PERIOD[1])
     youtubeClient.setSearchWords(M32021AutumnScraper.YOUTUBE_SEARCH_WORD)
+    youtubeClient.setPeriod(M32021AutumnScraper.PERIOD[0], M32021AutumnScraper.PERIOD[1])
     circles.setExhibition(exhibition)
 
     const result = await circles.fetchAll()
@@ -62,9 +63,8 @@ async function go() {
                 id: movieId,
                 type: MediaService.YouTube,
                 url: `https://youtu.be/${movieId}`,
-                reliability: 0.5,
+                reliability: 0.4,
             }
-            Log.print(`${id} (YouTube): media updated`)
         }
         if (!media) continue
         if (
