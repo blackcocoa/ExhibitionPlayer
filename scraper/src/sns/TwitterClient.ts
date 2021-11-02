@@ -14,6 +14,7 @@ interface RawTweet {
     quoted_status?: object
     entities: {
         urls: [{ expanded_url: string }]
+        hashtags: { text?: string; tag?: string }[]
     }
 }
 
@@ -42,6 +43,17 @@ export class TwitterClient {
         this.until = null
     }
 
+    private getReliability(hashtags: { text?: string; tag?: string }[]) {
+        if (!hashtags) return 0.3
+
+        for (const tag of hashtags) {
+            if (!tag.tag && !tag.text) continue
+            const text = tag.tag || tag.text
+            if (text.match(/(M3|M3春|春M3|M3秋|秋M3|M3まとめ)/)) return 0.6
+        }
+        return 0.3
+    }
+
     private getAvailableUrls(response: RawTweet[]): { urls: string[]; reliability: number } {
         let urls: any[] = []
         const regexSoundCloud = /^https?:\/\/(?:soundcloud\.com)\/(.*)/i
@@ -54,7 +66,7 @@ export class TwitterClient {
             if (!u.length) return
             urls.push({
                 url: u[0],
-                reliability: rawTweet.reliability,
+                reliability: this.getReliability(rawTweet.entities.hashtags),
                 createdAt: moment(rawTweet.created_at, 'LLLL ZZ YYYY').unix(),
             })
         })
@@ -152,21 +164,21 @@ export class TwitterClient {
                     tweet_mode: 'extended',
                     count: 200,
                 })
-            ).map((t) => ({ ...t, text: t.full_text || t.text, reliability: 0.3 }))
-            const tagResponse: RawTweet[] = (
-                await this.client.get('search/tweets', {
-                    q: `#M3 OR #M3春 OR #M3秋 OR #M3まとめ from:${username}`,
-                    tweet_mode: 'extended',
-                })
-            ).statuses.map((t) => ({ ...t, reliability: 0.6 }))
+            ).map((t) => ({ ...t, text: t.full_text || t.text }))
+            // const tagResponse: RawTweet[] = (
+            //     await this.client.get('search/tweets', {
+            //         q: `#M3 OR #M3春 OR #M3秋 OR #M3まとめ from:${username}`,
+            //         tweet_mode: 'extended',
+            //     })
+            // ).statuses.map((t) => ({ ...t, reliability: 0.6 }))
             if (userResponse.data.includes?.tweets?.length) {
                 const tweet = userResponse.data.includes.tweets[0]
                 tweetResponse.unshift({
                     ...tweet,
-                    reliability: tweet.text.match(/(#M3|#M3春|#M3秋|#M3まとめ)/) ? 0.6 : 0.5,
+                    reliability: tweet.text.match(/(#M3|#M3春|#春M3|#秋M3|#M3秋|#M3まとめ)/) ? 0.6 : 0.5,
                 })
             }
-            const result = this.onGetTimeline(tagResponse.concat(tweetResponse))
+            const result = this.onGetTimeline(tweetResponse)
             result.user = {
                 id: userResponse.data.data.id,
                 screenName: userResponse.data.data.username,

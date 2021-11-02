@@ -29,6 +29,7 @@ async function go() {
     const circles = new CircleList(db.db)
     const exhibition = exhibitions.find((e) => e.slug === M32021AutumnScraper.ID)
     twitterClient.setPeriod(M32021AutumnScraper.PERIOD[0], M32021AutumnScraper.PERIOD[1])
+    youtubeClient.setSearchWords(M32021AutumnScraper.YOUTUBE_SEARCH_WORD)
     circles.setExhibition(exhibition)
 
     const result = await circles.fetchAll()
@@ -37,23 +38,13 @@ async function go() {
 
     for (let i = 0; i < result.length; i++) {
         const { id, data } = result[i]
+        let media: Media
         if (data.twitterId) {
             try {
                 if (data.media && data.media.reliability >= 0.6) continue
                 const timeline = await twitterClient.fetch(data.twitterId)
                 if (!timeline || !timeline.urls.length) continue
-                const media = await MediaFactory.create(timeline.urls, timeline.reliability, id)
-                if (!media) continue
-                if (
-                    !data.media ||
-                    media.reliability > data.media.reliability ||
-                    (media.url !== data.media.url && media.reliability >= data.media.reliability)
-                ) {
-                    await circles.update(id, {
-                        media: media,
-                    })
-                    Log.print(`${data.twitterId} : media updated`)
-                }
+                media = await MediaFactory.create(timeline.urls, timeline.reliability, id)
             } catch (error) {
                 if (error instanceof RateLimitError) {
                     Log.print('Rate limit exceeded. waiting for 15 minutes...')
@@ -66,17 +57,23 @@ async function go() {
         } else if (data.youtubeId) {
             const movieId = await youtubeClient.fetch(data.youtubeId)
             if (!movieId) continue
-            const media: Media = {
+            media = {
                 circleId: id,
                 id: movieId,
                 type: MediaService.YouTube,
                 url: `https://youtu.be/${movieId}`,
                 reliability: 0.5,
             }
-            await circles.update(id, {
-                media: media,
-            })
-            Log.print(`${id} : media updated`)
+            Log.print(`${id} (YouTube): media updated`)
+        }
+        if (!media) continue
+        if (
+            !data.media ||
+            media.reliability > data.media.reliability ||
+            (media.url !== data.media.url && media.reliability >= data.media.reliability)
+        ) {
+            await circles.update(id, { media })
+            Log.print(`${data.twitterId || data.youtubeId}: media updated`)
         }
     }
 

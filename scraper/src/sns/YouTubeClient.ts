@@ -3,15 +3,16 @@ import * as moment from 'moment'
 import axios from 'axios'
 
 export class YouTubeClient {
-    static SEARCH_WORD: string[] = ['M3-2021秋', 'M32021秋', 'M3 2021秋', 'M3-2021-秋', 'M3 2021 秋', 'M3秋']
     apiKey: string
+    searchWords: string[]
 
     constructor() {
         this.apiKey = process.env.YOUTUBE_API_KEY
+        this.searchWords = []
     }
 
     private isRelated(name: string) {
-        for (let searchword of YouTubeClient.SEARCH_WORD) {
+        for (let searchword of this.searchWords) {
             if (name.search(searchword) >= 0) return true
         }
         return false
@@ -19,6 +20,10 @@ export class YouTubeClient {
 
     private onError(username: string, error: any): void {
         console.error(username, error)
+    }
+
+    setSearchWords(words: string[]) {
+        this.searchWords = words
     }
 
     async fetchChannelId(username: string): Promise<string> {

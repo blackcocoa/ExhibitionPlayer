@@ -65,7 +65,7 @@ const About: NextPage<Props> = () => {
 
                 <p>
                     迷ったら、「#M3まとめ
-                    https://www.youtube.com/watch?v=xxxxxxxxxxx」と書いてもらえれば確実です（xxxxxxxxxxxの部分はご自身の動画IDに書き換えてください）。
+                    https://www.youtube.com/watch?v=xxxxxxxxxxx」と書いてもらえれば確実です（xxxxxxxxxxxの部分はご自身の動画のものに書き換えてください）。
                 </p>
 
                 <h3>ご注意</h3>
