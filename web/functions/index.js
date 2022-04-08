@@ -3,7 +3,7 @@ const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 const next = require('next')
 const axios = require('axios')
-const SOUNDCLOUD_CLIENT_ID = 'sBsbgNTdaqhwPNN5npZXiLAalFrvSI1S'
+const SOUNDCLOUD_CLIENT_ID = 'tvr5oyEDbwmNuQSmuNFkGLFrMn5wqT3H'
 admin.initializeApp()
 
 const firestore = admin.firestore()
@@ -64,7 +64,7 @@ const checkSoundCloudTokenHealth = async (context) => {
             `https://api-v2.soundcloud.com/tracks/${trackId}?client_id=${SOUNDCLOUD_CLIENT_ID}`
         )
     } catch (error) {
-        console.error(new Error("Error validating the SoundCloud token"))
+        console.error(new Error('Error validating the SoundCloud token'))
     }
 
     return null
@@ -84,5 +84,7 @@ exports.getStreamUrl = functions.region('us-central1').https.onCall(async (data,
 
 exports.fetchSoundCloudTokenHealth = functions.region('us-central1').https.onCall(checkSoundCloudTokenHealth)
 
-exports.watchSoundCloudTokenHealth = functions.region('us-central1').pubsub.schedule('every 12 hours').onRun(checkSoundCloudTokenHealth)
-
+exports.watchSoundCloudTokenHealth = functions
+    .region('us-central1')
+    .pubsub.schedule('every 12 hours')
+    .onRun(checkSoundCloudTokenHealth)
