@@ -11,7 +11,6 @@
     },
     "functions": {
         "runtime": "nodejs14",
-        "source": "dist/functions",
-        "predeploy": "babel 'src/functions' --out-dir 'dist/functions'"
+        "source": "./functions"
     }
 }

@@ -1,24 +1,10 @@
-const path = require('path')
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
-const next = require('next')
 const axios = require('axios')
 const SOUNDCLOUD_CLIENT_ID = 'tvr5oyEDbwmNuQSmuNFkGLFrMn5wqT3H'
 admin.initializeApp()
 
 const firestore = admin.firestore()
-
-var dev = process.env.NODE_ENV !== 'production'
-var app = next({
-    dev,
-    conf: { distDir: `${path.relative(process.cwd(), __dirname)}/next` },
-})
-var handle = app.getRequestHandler()
-
-exports.next = functions.region('us-central1').https.onRequest((req, res) => {
-    console.log('File: ' + req.originalUrl) // log the page.js file that is being requested
-    return app.prepare().then(() => handle(req, res))
-})
 
 async function fetchAllCircles(exhibitionId) {
     try {
@@ -57,12 +43,10 @@ const getItById = async (trackId) => {
 }
 
 const checkSoundCloudTokenHealth = async (context) => {
-    const trackId = '563207157' // https://soundcloud.com/imtenpi/starstruck
+    const trackId = '917284433' // https://soundcloud.com/hello1103/grace-takako
 
     try {
-        const response = await axios.get(
-            `https://api-v2.soundcloud.com/tracks/${trackId}?client_id=${SOUNDCLOUD_CLIENT_ID}`
-        )
+        await axios.get(`https://api-v2.soundcloud.com/tracks/${trackId}?client_id=${SOUNDCLOUD_CLIENT_ID}`)
     } catch (error) {
         console.error(new Error('Error validating the SoundCloud token'))
     }
