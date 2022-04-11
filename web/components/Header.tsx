@@ -1,9 +1,19 @@
 import React, { useContext, useState, useEffect, FC, useCallback, ChangeEvent } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { AppBar, Toolbar, IconButton, Checkbox, Drawer, Divider, Button, FormControlLabel } from '@material-ui/core'
+import {
+    AppBar,
+    Toolbar,
+    IconButton,
+    Checkbox,
+    Drawer,
+    Divider,
+    Button,
+    FormControlLabel,
+    Slider,
+} from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
-import CloseIcon from '@material-ui/icons/Close';
+import CloseIcon from '@material-ui/icons/Close'
 import { reducer, initialState, AppContext } from '../store'
 import { BaseSlider } from '../components/BaseSlider'
 import { AppConfig } from '../interfaces/AppConfig'
@@ -31,7 +41,8 @@ const Header: FC<Props> = () => {
             const event = e as CustomEvent
             const config: AppConfig = event.detail
             if (config.auditionDuration) setTimeout(() => setAuditionDuration(config.auditionDuration || 0), 300)
-            if (config.isExcludeUnrelated) setTimeout(() => setIsExcludeUnrelated(config.isExcludeUnrelated || false), 300)
+            if (config.isExcludeUnrelated)
+                setTimeout(() => setIsExcludeUnrelated(config.isExcludeUnrelated || false), 300)
         })
     }, [])
 
@@ -79,7 +90,12 @@ const Header: FC<Props> = () => {
                                     <i className="Anchor-body">トップページ</i>
                                 ) : (
                                     <Link href="/">
-                                        <Button size="large" variant="outlined" className="Anchor-body" style={{ minWidth: "240px" }}>
+                                        <Button
+                                            size="large"
+                                            variant="outlined"
+                                            className="Anchor-body"
+                                            style={{ minWidth: '240px' }}
+                                        >
                                             トップページ
                                         </Button>
                                     </Link>
@@ -90,7 +106,12 @@ const Header: FC<Props> = () => {
                                     <i className="Anchor-body">このサイトの使いかた</i>
                                 ) : (
                                     <Link href="/about">
-                                        <Button size="large" variant="outlined" className="Anchor-body" style={{ minWidth: "240px" }}>
+                                        <Button
+                                            size="large"
+                                            variant="outlined"
+                                            className="Anchor-body"
+                                            style={{ minWidth: '240px' }}
+                                        >
                                             このサイトの使いかた
                                         </Button>
                                     </Link>
@@ -102,7 +123,12 @@ const Header: FC<Props> = () => {
                                     <i className="Anchor-body">即売会一覧</i>
                                 ) : (
                                     <Link href="/exhibition">
-                                        <Button size="large" variant="outlined" className="Anchor-body" style={{ minWidth: "240px" }}>
+                                        <Button
+                                            size="large"
+                                            variant="outlined"
+                                            className="Anchor-body"
+                                            style={{ minWidth: '240px' }}
+                                        >
                                             即売会一覧
                                         </Button>
                                     </Link>
@@ -132,14 +158,29 @@ const Header: FC<Props> = () => {
                         </dl>
 
                         <FormControlLabel
-                            control={<Checkbox checked={isExcludeUnrelated} onChange={(event) => onChangeExcludeUnrelated(event.target.checked)} name="excludeUnrelated" />}
+                            control={
+                                <Checkbox
+                                    checked={isExcludeUnrelated}
+                                    onChange={(event) => onChangeExcludeUnrelated(event.target.checked)}
+                                    name="excludeUnrelated"
+                                />
+                            }
                             label="即売会と関係なさそうな音源をスキップする"
                         />
                     </section>
-                    <Button variant="contained" color="primary" disableElevation onClick={() => setIsDrawerOpen(false)} style={{ minWidth: "200px" }}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        disableElevation
+                        onClick={() => setIsDrawerOpen(false)}
+                        style={{ minWidth: '200px' }}
+                    >
                         閉じる
                     </Button>
-                    <IconButton onClick={() => setIsDrawerOpen(false)} style={{ position: "absolute", top: "10px", right: "15px" }}>
+                    <IconButton
+                        onClick={() => setIsDrawerOpen(false)}
+                        style={{ position: 'absolute', top: '10px', right: '15px' }}
+                    >
                         <CloseIcon />
                     </IconButton>
                 </div>

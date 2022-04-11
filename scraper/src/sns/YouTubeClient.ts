@@ -1,6 +1,7 @@
 import { Log } from '../debug/Log'
 import * as moment from 'moment'
 import axios from 'axios'
+require('dotenv').config()
 
 export class YouTubeClient {
     apiKey: string
@@ -37,8 +38,8 @@ export class YouTubeClient {
             const response: any = await axios.get(
                 `https://www.googleapis.com/youtube/v3/channels?key=${this.apiKey}&forUsername=${username}`
             )
-            if (response?.items.length) {
-                return response.items[0].id
+            if (response?.data?.items?.length) {
+                return response.data.items[0].id
             }
         } catch (error) {
             this.onError(username, error)

@@ -1,4 +1,4 @@
-import { M32021AutumnScraper } from './circle/M32021AutumnScraper'
+import Scraper from './circle/M32022SpringScraper'
 import { TwitterClient, RateLimitError } from './sns/TwitterClient'
 import { Log } from './debug/Log'
 import { CircleList } from './db/CircleList'
@@ -24,13 +24,12 @@ async function go() {
     const exhibitionList = new ExhibitionList(db.db)
     const exhibitions = await exhibitionList.fetchAll()
     const circles = new CircleList(db.db)
-    const exhibition = exhibitions.find((e) => e.slug === M32021AutumnScraper.ID)
+    const exhibition = exhibitions.find((e) => e.slug === Scraper.ID)
     circles.setExhibition(exhibition)
 
-    const scraper = new M32021AutumnScraper(exhibition)
+    const scraper = new Scraper(exhibition)
     circles.add(await scraper.fetch())
-    client.setPeriod(M32021AutumnScraper.PERIOD[0], M32021AutumnScraper.PERIOD[1])
-
+    client.setPeriod(Scraper.PERIOD[0], Scraper.PERIOD[1])
     Log.print(`Circle List fetched. getting media...`)
 
     for (let i = 0; i < circles.circles.length; i++) {

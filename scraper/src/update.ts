@@ -1,4 +1,4 @@
-import { M32021AutumnScraper } from './circle/M32021AutumnScraper'
+import Scraper from './circle/M32022SpringScraper'
 import { TwitterClient, RateLimitError } from './sns/TwitterClient'
 import { Log } from './debug/Log'
 import { CircleList } from './db/CircleList'
@@ -27,10 +27,10 @@ async function go() {
     const exhibitionList = new ExhibitionList(db.db)
     const exhibitions = await exhibitionList.fetchAll()
     const circles = new CircleList(db.db)
-    const exhibition = exhibitions.find((e) => e.slug === M32021AutumnScraper.ID)
-    twitterClient.setPeriod(M32021AutumnScraper.PERIOD[0], M32021AutumnScraper.PERIOD[1])
-    youtubeClient.setSearchWords(M32021AutumnScraper.YOUTUBE_SEARCH_WORD)
-    youtubeClient.setPeriod(M32021AutumnScraper.PERIOD[0], M32021AutumnScraper.PERIOD[1])
+    const exhibition = exhibitions.find((e) => e.slug === Scraper.ID)
+    twitterClient.setPeriod(Scraper.PERIOD[0], Scraper.PERIOD[1])
+    youtubeClient.setSearchWords(Scraper.YOUTUBE_SEARCH_WORD)
+    youtubeClient.setPeriod(Scraper.PERIOD[0], Scraper.PERIOD[1])
     circles.setExhibition(exhibition)
 
     const result = await circles.fetchAll()
