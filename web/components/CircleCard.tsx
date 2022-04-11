@@ -1,4 +1,4 @@
-import { Circle } from '../../shared/Circle'
+import { Circle } from '../shared/Circle'
 import { FC } from 'react'
 import TwitterIcon from '@material-ui/icons/Twitter'
 import { Button } from '@material-ui/core'

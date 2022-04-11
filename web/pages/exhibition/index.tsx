@@ -3,7 +3,7 @@ import { NextPage, GetStaticProps } from 'next'
 import Router from 'next/router'
 import { useState, useCallback, useContext } from 'react'
 import { Database } from '../../db/index'
-import { Exhibition } from '../../../shared/Exhibition'
+import { Exhibition } from '../../shared/Exhibition'
 import { ExhibitionResource } from '../../db/exhibitions'
 import { reducer, initialState, AppContext } from '../../store'
 import App from '../../components/App'
@@ -49,9 +49,13 @@ const ExhibitionIndex: NextPage<Props> = ({ exhibitions }) => {
 
             <section>
                 <h2>横断視聴についてのご注意</h2>
-                <p><b>自動再生（一定時間で次のトラックに進む機能）はブラウザが前面にないと正常に動作しません。</b><br />
-                サイトを開いているブラウザが最小化などでバックグラウンドに移行したり、別のタブを開いたりするとうまく動かない場合がありますのでご注意ください。<br />
-                次のトラックに進めなかった場合はプレイヤー右下の▶︎▶︎ボタンを押してください。</p>
+                <p>
+                    <b>自動再生（一定時間で次のトラックに進む機能）はブラウザが前面にないと正常に動作しません。</b>
+                    <br />
+                    サイトを開いているブラウザが最小化などでバックグラウンドに移行したり、別のタブを開いたりするとうまく動かない場合がありますのでご注意ください。
+                    <br />
+                    次のトラックに進めなかった場合はプレイヤー右下の▶︎▶︎ボタンを押してください。
+                </p>
             </section>
 
             <Footer />

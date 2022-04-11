@@ -1,18 +1,19 @@
 import React, { useContext, useState, useEffect, FC, useCallback, ChangeEvent } from 'react'
 import { useRouter } from 'next/router'
-import Divider from '@material-ui/core/Divider';
-import Dialog from '@material-ui/core/Dialog';
-import MuiDialogTitle from '@material-ui/core/DialogTitle';
-import MuiDialogContent from '@material-ui/core/DialogContent';
-import IconButton from '@material-ui/core/IconButton';
+import Divider from '@material-ui/core/Divider'
+import Dialog from '@material-ui/core/Dialog'
+import MuiDialogTitle from '@material-ui/core/DialogTitle'
+import MuiDialogContent from '@material-ui/core/DialogContent'
+import IconButton from '@material-ui/core/IconButton'
 import { PlayArrow, Stop, Close } from '@material-ui/icons'
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import ListItemText from '@material-ui/core/ListItemText';
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemAvatar from '@material-ui/core/ListItemAvatar'
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
+import ListItemText from '@material-ui/core/ListItemText'
 import { reducer, initialState, AppContext } from '../store'
 import { AppConfig } from '../interfaces/AppConfig'
+import { Circle } from '../shared/Circle'
 
 type Props = {}
 
@@ -28,13 +29,13 @@ const FavView: FC<Props> = () => {
         })
     }, [])
 
-    const playCircle = useCallback((circle) => {
+    const playCircle = useCallback((circle: Circle) => {
         if (!circle.media) return
 
         dispatch({ type: 'mediaPlayNow', payload: circle.media })
     }, [])
 
-    const deleteCircle = useCallback((circle) => {
+    const deleteCircle = useCallback((circle: Circle) => {
         dispatch({ type: 'favRemove', payload: circle })
     }, [])
 
@@ -59,7 +60,11 @@ const FavView: FC<Props> = () => {
         <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={state.isFavViewOpen}>
             <MuiDialogTitle>
                 <b style={{ padding: '0 40px' }}>お気に入りサークル</b>
-                <IconButton aria-label="close" onClick={handleClose} style={{ position: 'absolute', right: '10px', top: '10px', }}>
+                <IconButton
+                    aria-label="close"
+                    onClick={handleClose}
+                    style={{ position: 'absolute', right: '10px', top: '10px' }}
+                >
                     <Close />
                 </IconButton>
             </MuiDialogTitle>
@@ -67,18 +72,22 @@ const FavView: FC<Props> = () => {
                 <List>
                     {[...state.favCircles].map((circle, index) => (
                         <div key={circle.id}>
-                            {index ? (<Divider />) : <></>}
+                            {index ? <Divider /> : <></>}
                             <ListItem>
                                 <ListItemAvatar>
                                     {circle.media ? (
-                                        <IconButton size="small" onClick={() => playCircle(circle)} >
+                                        <IconButton size="small" onClick={() => playCircle(circle)}>
                                             <PlayArrow />
                                         </IconButton>
-                                    ) : <></>}
+                                    ) : (
+                                        <></>
+                                    )}
                                 </ListItemAvatar>
-                                <ListItemText style={{ paddingRight: '20px' }}>{shortenArea(circle.booth?.area)} {circle.booth?.number} {circle.name}</ListItemText>
+                                <ListItemText style={{ paddingRight: '20px' }}>
+                                    {shortenArea(circle.booth?.area)} {circle.booth?.number} {circle.name}
+                                </ListItemText>
                                 <ListItemSecondaryAction>
-                                    <IconButton size="small" onClick={() => deleteCircle(circle)} >
+                                    <IconButton size="small" onClick={() => deleteCircle(circle)}>
                                         <Close />
                                     </IconButton>
                                 </ListItemSecondaryAction>
@@ -87,8 +96,14 @@ const FavView: FC<Props> = () => {
                     ))}
                 </List>
                 {!state.favCircles.length ? (
-                    <p>お気に入りサークルが無いか、ロード中です。<br />すでに作成したお気に入りリストがある場合は10秒ほど待ってみてください。</p>
-                ) : <></>}
+                    <p>
+                        お気に入りサークルが無いか、ロード中です。
+                        <br />
+                        すでに作成したお気に入りリストがある場合は10秒ほど待ってみてください。
+                    </p>
+                ) : (
+                    <></>
+                )}
             </MuiDialogContent>
             <style jsx>{`
                 h1 {

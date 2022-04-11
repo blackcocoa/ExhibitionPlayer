@@ -2,10 +2,10 @@ import React, { useContext, useState, FC } from 'react'
 import ReactPlayer from 'react-player'
 import { CircleResource } from '../db/circles'
 import { Database } from '../db/index'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { PlayArrow, Stop, FastForward, Info, Favorite } from '@material-ui/icons'
-import IconButton from '@material-ui/core/IconButton';
-import { Media, MediaService } from '../../shared/Media'
+import IconButton from '@material-ui/core/IconButton'
+import { Media, MediaService } from '../shared/Media'
 import { AppContext } from '../store'
 import * as Scroll from 'react-scroll'
 
@@ -14,13 +14,13 @@ type Props = {}
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         toolButtons: {
-            backgroundColor: "transparent",
-            color: "white",
-            padding: "5px",
-            stroke: "rgba(0,0,0,0.2)"
+            backgroundColor: 'transparent',
+            color: 'white',
+            padding: '5px',
+            stroke: 'rgba(0,0,0,0.2)',
         },
-    }),
-);
+    })
+)
 
 const Audition: FC<Props> = () => {
     const [nextTimer, setNextTimer] = useState<number | undefined>(undefined)
@@ -90,7 +90,7 @@ const Audition: FC<Props> = () => {
 
     function isFaved() {
         if (!queue.length || !queue[0].circleId) return false
-        return state.favCircles.map(c => c.id).indexOf(queue[0].circleId) >= 0
+        return state.favCircles.map((c) => c.id).indexOf(queue[0].circleId) >= 0
     }
 
     let src: string,
@@ -154,9 +154,13 @@ const Audition: FC<Props> = () => {
                 <div className="progress" onClick={onClickProgress}>
                     <div className="progress-played" style={{ width: `${100 * progress}%` }}></div>
                 </div>
-                <IconButton className={classes.toolButtons} onClick={onClickFav} style={{ color: isFaved() ? '#ff7d89' : '#ffffff' }}>
+                <IconButton
+                    className={classes.toolButtons}
+                    onClick={onClickFav}
+                    style={{ color: isFaved() ? '#ff7d89' : '#ffffff' }}
+                >
                     <Favorite />
-                </IconButton >
+                </IconButton>
                 <IconButton className={classes.toolButtons} onClick={onClickFwd}>
                     <FastForward />
                 </IconButton>
@@ -221,7 +225,7 @@ const Audition: FC<Props> = () => {
                     margin-right: 10px;
                     width: 32px;
                     height: 32px;
-                    stroke: rgba(0,0,0,0.2);
+                    stroke: rgba(0, 0, 0, 0.2);
                 }
                 .play:hover,
                 .fwd:hover {

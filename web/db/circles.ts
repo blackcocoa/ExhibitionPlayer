@@ -1,10 +1,10 @@
-import firebase from 'firebase/app'
-import 'firebase/firestore'
-import { Circle } from '../../shared/Circle'
-import { Exhibition } from '../../shared/Exhibition'
-import { SoundCloudStreamUrl } from '../../shared/SoundCloudStreamUrl'
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/firestore'
 import { getStreamUrl } from './stream'
-import { MediaService } from '../../shared/Media'
+import { MediaService } from '../shared/Media'
+import { Exhibition } from '../shared/Exhibition'
+import { SoundCloudStreamUrl } from '../shared/SoundCloudStreamUrl'
+import { Circle } from '../shared/Circle'
 
 export class CircleResource {
     db: firebase.firestore.Firestore
@@ -17,7 +17,7 @@ export class CircleResource {
 
     constructor(db: firebase.firestore.Firestore) {
         this.db = db
-        this.limit = (process.env.CIRCLE_FETCH_LIMIT as unknown) as number
+        this.limit = process.env.CIRCLE_FETCH_LIMIT as unknown as number
         this.last = null
         this.filterFields = []
     }
@@ -108,7 +108,7 @@ export class CircleResource {
         return this._fetch()
     }
 
-    async fetchById(id:string, exhibitionId:string | undefined): Promise<Circle> {
+    async fetchById(id: string, exhibitionId: string | undefined): Promise<Circle> {
         if (!exhibitionId) {
             if (!this.exhibition) {
                 throw new Error('Exhibition not set')
@@ -120,10 +120,10 @@ export class CircleResource {
         }
 
         const snapshot = await this.db.collection('exhibitions').doc(exhibitionId).collection('circles').doc(id).get()
-        if (!snapshot.exists) throw new Error("not found")
+        if (!snapshot.exists) throw new Error('not found')
 
         let circle = <Circle>snapshot.data()
-        if (!circle) throw new Error("not found")
+        if (!circle) throw new Error('not found')
 
         circle.id = snapshot.id
 

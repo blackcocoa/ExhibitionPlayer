@@ -1,11 +1,6 @@
 import React, { useContext, useState, useEffect, FC, useCallback, ChangeEvent } from 'react'
 import { useRouter } from 'next/router'
-import Link from 'next/link'
-import { AppBar, Toolbar, IconButton, Drawer, Divider, Button } from '@material-ui/core'
-import MenuIcon from '@material-ui/icons/Menu'
 import { reducer, initialState, AppContext } from '../store'
-import { BaseSlider } from '../components/BaseSlider'
-import { AppConfig } from '../interfaces/AppConfig'
 
 type Props = {}
 

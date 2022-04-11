@@ -2,17 +2,17 @@ import * as React from 'react'
 import { NextPage, GetStaticProps, GetStaticPaths } from 'next'
 import { useState, useCallback, useContext, useEffect } from 'react'
 import { FormControl, FormLabel, Checkbox, RadioGroup, FormControlLabel, Radio, Button } from '@material-ui/core'
-import IconButton from '@material-ui/core/IconButton';
-import { Favorite } from '@material-ui/icons';
+import IconButton from '@material-ui/core/IconButton'
+import { Favorite } from '@material-ui/icons'
 import { Database } from '../../db/index'
 import { CircleResource } from '../../db/circles'
 import { ExhibitionResource } from '../../db/exhibitions'
-import { Exhibition } from '../../../shared/Exhibition'
-import { Circle } from '../../../shared/Circle'
+import { Exhibition } from '../../shared/Exhibition'
+import { Circle } from '../../shared/Circle'
 import { AppContext } from '../../store'
 import App from '../../components/App'
 import { CircleCard } from '../../components/CircleCard'
-import FavView from '../../components/FavView';
+import FavView from '../../components/FavView'
 
 interface Props {
     id: string
@@ -94,11 +94,11 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
         setIsFetching(false)
     }
 
-    const onChangeArea = useCallback((event) => {
+    const onChangeArea = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         setArea(event.target.value)
     }, [])
 
-    const onChangeOrderBy = useCallback((event) => {
+    const onChangeOrderBy = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         setOrderBy(event.target.value)
     }, [])
 
@@ -185,7 +185,6 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
                 </FormControl>
 
                 <div className="search-buttons">
-
                     <Button variant="contained" color="primary" disableElevation onClick={() => onClickFetch()}>
                         検索
                     </Button>
@@ -213,7 +212,19 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
                 もっと見る
             </Button>
 
-            <IconButton style={{ position: 'fixed', bottom: state.playQueue.length ? '250px' : '20px', right: '20px', backgroundColor: "#ffffff", boxShadow: '0 0 10px rgba(0,0,0,0.15)', border: '1px solid #eee' }} color="secondary" aria-label="Favorites" onClick={() => handleClickFav()}>
+            <IconButton
+                style={{
+                    position: 'fixed',
+                    bottom: state.playQueue.length ? '250px' : '20px',
+                    right: '20px',
+                    backgroundColor: '#ffffff',
+                    boxShadow: '0 0 10px rgba(0,0,0,0.15)',
+                    border: '1px solid #eee',
+                }}
+                color="secondary"
+                aria-label="Favorites"
+                onClick={() => handleClickFav()}
+            >
                 <Favorite />
             </IconButton>
 

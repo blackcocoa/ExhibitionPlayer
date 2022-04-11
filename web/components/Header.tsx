@@ -58,7 +58,7 @@ const Header: FC<Props> = () => {
         setAuditionDuration(value as number)
     }
 
-    const onChangeCommitedAuditionDuration = useCallback((event, value) => {
+    const onChangeCommitedAuditionDuration = useCallback((event: React.ChangeEvent<{}>, value: number | number[]) => {
         dispatch({ type: 'updateSetting', payload: { auditionDuration: value } })
     }, [])
 
