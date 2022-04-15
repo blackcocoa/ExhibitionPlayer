@@ -45,13 +45,17 @@ const Header: FC<Props> = () => {
                 setTimeout(() => setIsExcludeUnrelated(config.isExcludeUnrelated || false), 300)
         })
     }, [])
-
     const openDrawer = useCallback(() => {
         setIsDrawerOpen(true)
     }, [])
 
     const closeDrawer = useCallback(() => {
         setIsDrawerOpen(false)
+    }, [])
+
+    const handleClickFav = useCallback(() => {
+        setIsDrawerOpen(false)
+        dispatch({ type: 'favOpen' })
     }, [])
 
     const onChangeAuditionDuration = (event: ChangeEvent<{}>, value: number | number[]) => {
@@ -134,6 +138,22 @@ const Header: FC<Props> = () => {
                                     </Link>
                                 )}
                             </li>
+
+                            {router.pathname === '/exhibition/[slug]' ? (
+                                <li>
+                                    <Button
+                                        size="large"
+                                        variant="outlined"
+                                        className="Anchor-body"
+                                        style={{ minWidth: '240px' }}
+                                        onClick={handleClickFav}
+                                    >
+                                        お気に入り一覧
+                                    </Button>
+                                </li>
+                            ) : (
+                                <></>
+                            )}
                         </ul>
                     </section>
                     <Divider />

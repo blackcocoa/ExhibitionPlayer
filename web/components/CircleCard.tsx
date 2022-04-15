@@ -50,9 +50,9 @@ export const CircleCard: FC<Props> = (props) => {
                     border: 1px solid #eaeaea;
                     border-radius: 2px;
                     box-sizing: border-box;
-                    flex: 0 1 31%;
+                    flex: 0 1 24%;
                     margin-bottom: 50px;
-                    padding: 20px 20px 70px;
+                    padding: 20px 20px 80px;
                     position: relative;
                     text-align: left;
                 }
@@ -64,6 +64,7 @@ export const CircleCard: FC<Props> = (props) => {
                 }
 
                 p {
+                    font-size: 0.9rem;
                     word-break: break-all;
                 }
                 .active {
@@ -94,6 +95,11 @@ export const CircleCard: FC<Props> = (props) => {
                     left: 22px;
                     color: #888;
                     font-size: 0.93rem;
+                }
+                @media screen and (max-width: 1024px) {
+                    li {
+                        flex-basis: 31%;
+                    }
                 }
                 @media screen and (max-width: 767px) {
                     li {

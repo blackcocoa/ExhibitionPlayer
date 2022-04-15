@@ -14,12 +14,16 @@ import ListItemText from '@material-ui/core/ListItemText'
 import { reducer, initialState, AppContext } from '../store'
 import { AppConfig } from '../interfaces/AppConfig'
 import { Circle } from '../shared/Circle'
+import { Button } from '@material-ui/core'
+import { Database } from '../db'
+import { CircleResource } from '../db/circles'
 
 type Props = {}
 
 const FavView: FC<Props> = () => {
     const { state, dispatch } = useContext(AppContext)
     const router = useRouter()
+    const queue = state.playQueue
 
     useEffect(() => {
         window.addEventListener('configLoad', (e) => {
@@ -42,6 +46,15 @@ const FavView: FC<Props> = () => {
     const handleClose = useCallback(() => {
         dispatch({ type: 'favClose' })
     }, [])
+
+    const handleFav = async () => {
+        if (!state.activeExhibition || !queue.length || !queue[0].circleId) return
+
+        const db = new Database()
+        const circleResource = new CircleResource(db.getInstance())
+        const circle = await circleResource.fetchById(queue[0].circleId, state.activeExhibition.id)
+        dispatch({ type: 'favAdd', payload: circle })
+    }
 
     function shortenArea(name: string) {
         switch (name) {
@@ -68,7 +81,7 @@ const FavView: FC<Props> = () => {
                     <Close />
                 </IconButton>
             </MuiDialogTitle>
-            <MuiDialogContent>
+            <MuiDialogContent style={{ paddingBottom: 20 }}>
                 <List>
                     {[...state.favCircles].map((circle, index) => (
                         <div key={circle.id}>
@@ -97,13 +110,24 @@ const FavView: FC<Props> = () => {
                 </List>
                 {!state.favCircles.length ? (
                     <p>
-                        お気に入りサークルが無いか、ロード中です。
+                        この即売会のお気に入りサークルが無いか、ロード中です。
                         <br />
                         すでに作成したお気に入りリストがある場合は10秒ほど待ってみてください。
                     </p>
                 ) : (
                     <></>
                 )}
+
+                <Button
+                    size="large"
+                    variant="outlined"
+                    className="Anchor-body"
+                    disabled={!state.activeExhibition || !queue.length || !queue[0].circleId}
+                    style={{ marginTop: 20, minWidth: '240px', backgroundColor: '#fff6f8' }}
+                    onClick={handleFav}
+                >
+                    再生中のサークルをお気に入りに登録する
+                </Button>
             </MuiDialogContent>
             <style jsx>{`
                 h1 {
