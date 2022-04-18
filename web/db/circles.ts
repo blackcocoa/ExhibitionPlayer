@@ -83,9 +83,9 @@ export class CircleResource {
         this.collection = this.db.collection('exhibitions').doc(this.exhibition.id).collection('circles')
     }
 
-    addFilter(field: string, operator: string, value: string): void {
+    addFilter(field: string, operator: firebase.firestore.WhereFilterOp, value: string): void {
         if (!this.collection) throw new Error('Exhibition not set')
-        this.query = this.collection.where(field, operator as firebase.firestore.WhereFilterOp, value)
+        this.query = this.collection.where(field, operator, value)
         this.filterFields.push(field)
     }
 
