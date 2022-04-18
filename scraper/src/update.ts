@@ -35,7 +35,7 @@ async function go() {
 
     const result = await circles.fetchAll()
 
-    Log.print(`Circle List fetched. updating media...`)
+    Log.print(`Circle List fetched (${result.length}). updating media...`)
 
     for (let i = 0; i < result.length; i++) {
         const { id, data } = result[i]
