@@ -54,6 +54,10 @@ export class CircleResource {
         return await this.fetchStreamUrls(circles)
     }
 
+    setLimit(limit: number) {
+        this.limit = limit
+    }
+
     async fetchStreamUrls(circles: Circle[]) {
         const streamUrls: SoundCloudStreamUrl[] = await getStreamUrl(
             circles

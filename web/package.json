@@ -5,17 +5,18 @@
     "license": "UNLICENSED",
     "private": true,
     "scripts": {
-        "dev": "next -p 3562",
-        "build": "next build",
-        "deploy": "NODE_ENV=production firebase deploy --only functions",
+        "dev": "cp -r ../shared ./ && next -p 3562",
+        "build": "cp -r ../shared ./ && next build",
+        "deploy": "cp -r ../shared ./ && NODE_ENV=production firebase deploy --only functions",
         "emulators": "NODE_ENV=production firebase emulators:start",
         "clean": "rimraf \"dist/functions/**\" && rimraf dist/public",
-        "install-deps": "cp src/functions/package.json dist/functions/package.json && cd dist/functions && yarn"
+        "install-deps": "cp -r ../shared ./ && cd dist/functions && yarn"
     },
     "dependencies": {
         "@babel/polyfill": "^7.10.4",
-        "@material-ui/core": "^4.9.5",
-        "@material-ui/icons": "^4.9.1",
+        "@emotion/react": "^11.9.0",
+        "@emotion/styled": "^11.8.1",
+        "@mui/material": "^5.6.1",
         "axios": "^0.26.1",
         "firebase": "^9.6.10",
         "firebase-functions": "^3.20.0",
