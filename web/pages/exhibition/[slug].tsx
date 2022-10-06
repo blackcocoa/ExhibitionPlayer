@@ -1,7 +1,18 @@
 import * as React from 'react'
 import { NextPage, GetStaticProps, GetStaticPaths } from 'next'
 import { useState, useCallback, useContext, useEffect } from 'react'
-import { FormControl, FormLabel, Checkbox, RadioGroup, FormControlLabel, Radio, Button } from '@material-ui/core'
+import {
+    FormControl,
+    FormLabel,
+    Checkbox,
+    RadioGroup,
+    FormControlLabel,
+    Radio,
+    Button,
+    Select,
+    InputLabel,
+    MenuItem,
+} from '@material-ui/core'
 import IconButton from '@material-ui/core/IconButton'
 import { Favorite } from '@material-ui/icons'
 import { Database } from '../../db/index'
@@ -28,6 +39,7 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
     const [circles, setCircles] = useState<Circle[]>([])
     const [isPlaying, setIsPlaying] = useState<boolean>(false)
     const [isFetching, setIsFetching] = useState<boolean>(false)
+    const [numFetch, setNumFetch] = useState<number>(process.env.CIRCLE_FETCH_LIMIT as unknown as number)
     const [area, setArea] = useState<string>('リアル会場（第一＆第二展示場）')
     const [orderBy, setOrderBy] = useState<string>('booth.number')
     const [order, setOrder] = useState<'desc' | 'asc'>('asc')
@@ -94,6 +106,14 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
         setIsFetching(false)
     }
 
+    const handleChangeNumFetch = useCallback(
+        (event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>) => {
+            setNumFetch(parseInt(event.target.value as string))
+            setTimeout(() => onClickFetch())
+        },
+        []
+    )
+
     const onChangeArea = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         setArea(event.target.value)
     }, [])
@@ -121,6 +141,9 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
 
     const onClickFetch = useCallback(async () => {
         dispatch({ type: 'loading' })
+        console.log(numFetch)
+        console.log(area)
+        circleResource.setLimit(numFetch)
         circleResource.clearFilter()
         if (area) {
             if (area === 'リアル会場（第一＆第二展示場）') {
@@ -141,7 +164,7 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
         }
         setCircles(c)
         dispatch({ type: 'loadingEnd' })
-    }, [area, order, orderBy])
+    }, [area, order, orderBy, numFetch])
 
     const onClickNext = useCallback(() => {
         dispatch({ type: 'loading' })
@@ -184,6 +207,22 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
                 </RadioGroup> */}
                 </FormControl>
 
+                <FormControl component="fieldset" mx={4}>
+                    <FormLabel component="legend">表示件数</FormLabel>
+                    <Select
+                        autoWidth={true}
+                        labelId="num-fetch"
+                        variant="outlined"
+                        value={numFetch}
+                        onChange={handleChangeNumFetch}
+                    >
+                        <MenuItem value={12}>12</MenuItem>
+                        <MenuItem value={60}>60</MenuItem>
+                        <MenuItem value={120}>120</MenuItem>
+                        <MenuItem value={240}>240</MenuItem>
+                    </Select>
+                </FormControl>
+
                 <div className="search-buttons">
                     <Button variant="contained" color="primary" disableElevation onClick={() => onClickFetch()}>
                         検索
@@ -192,6 +231,7 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
             </div>
 
             <h2>サークル一覧</h2>
+
             <ul className="circles">
                 {circles.map((circle, index) => {
                     return (
@@ -245,6 +285,7 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
                 }
                 h2 {
                     margin-bottom: 30px;
+                    padding-top: 18px;
                     text-align: left;
                 }
                 .circles {
@@ -253,13 +294,26 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
                     justify-content: space-between;
                     margin-bottom: 20px;
                 }
+                .circles-wrap {
+                    position: relative;
+                }
+                .circles-num {
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    width: 200px;
+                }
+                .circles-num-label {
+                    margin-right: 10px;
+                }
                 .search {
                     background-color: #f3f3f3;
                     border: 1px solid #eaeaea;
                     padding: 30px 40px;
                     margin: 0 auto 40px;
                     text-align: left;
-                    max-width: 560px;
+                    max-width: 720px;
+                    justify-content: space-between;
                 }
                 .search-options {
                     margin-top: 20px;
