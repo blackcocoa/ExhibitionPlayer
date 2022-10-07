@@ -109,7 +109,6 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
     const handleChangeNumFetch = useCallback(
         (event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>) => {
             setNumFetch(parseInt(event.target.value as string))
-            setTimeout(() => onClickFetch())
         },
         []
     )
@@ -141,8 +140,6 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
 
     const onClickFetch = useCallback(async () => {
         dispatch({ type: 'loading' })
-        console.log(numFetch)
-        console.log(area)
         circleResource.setLimit(numFetch)
         circleResource.clearFilter()
         if (area) {
@@ -207,8 +204,10 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
                 </RadioGroup> */}
                 </FormControl>
 
-                <FormControl component="fieldset">
-                    <FormLabel component="legend">表示件数</FormLabel>
+                <FormControl component="fieldset" style={{ marginLeft: 30 }}>
+                    <FormLabel component="legend" style={{ marginBottom: 10 }}>
+                        表示件数
+                    </FormLabel>
                     <Select
                         autoWidth={true}
                         labelId="num-fetch"
@@ -220,6 +219,7 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
                         <MenuItem value={60}>60</MenuItem>
                         <MenuItem value={120}>120</MenuItem>
                         <MenuItem value={240}>240</MenuItem>
+                        <MenuItem value={240}>1000</MenuItem>
                     </Select>
                 </FormControl>
 
