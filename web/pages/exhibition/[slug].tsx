@@ -207,7 +207,7 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
                 </RadioGroup> */}
                 </FormControl>
 
-                <FormControl component="fieldset" mx={4}>
+                <FormControl component="fieldset">
                     <FormLabel component="legend">表示件数</FormLabel>
                     <Select
                         autoWidth={true}
