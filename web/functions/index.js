@@ -1,7 +1,7 @@
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 const axios = require('axios')
-const SOUNDCLOUD_CLIENT_ID = 'tvr5oyEDbwmNuQSmuNFkGLFrMn5wqT3H'
+const SOUNDCLOUD_CLIENT_ID = '0B4jtZF6rFh5TG0eiQ1nuJfbsGk9FZFg'
 admin.initializeApp()
 
 const firestore = admin.firestore()
