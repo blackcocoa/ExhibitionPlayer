@@ -22,7 +22,7 @@ export const initialState: State = {
     activeExhibition: null,
     playQueue: [],
     auditionDuration: parseInt(process.env.DEFAULT_AUDITION_DURATION),
-    isExcludeUnrelated: true,
+    isExcludeUnrelated: false,
     favCircles: [],
     isFavViewOpen: false,
     isLoading: false,
