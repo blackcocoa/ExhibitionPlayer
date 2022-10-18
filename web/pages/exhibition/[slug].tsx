@@ -84,7 +84,7 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
 
     const getNextCircle = async () => {
         setIsFetching(true)
-        const limit = parseInt(process.env.CIRCLE_DISPLAY_LIMIT!)
+        const limit = numFetch
         const nextCircles = await circleResource.next()
         if (!nextCircles.length) {
             console.log('End')
@@ -218,8 +218,8 @@ const ExhibitionPage: NextPage<Props> = ({ id, name, slug }) => {
                         <MenuItem value={12}>12</MenuItem>
                         <MenuItem value={60}>60</MenuItem>
                         <MenuItem value={120}>120</MenuItem>
-                        <MenuItem value={240}>240</MenuItem>
-                        <MenuItem value={240}>1000</MenuItem>
+                        <MenuItem value={480}>480</MenuItem>
+                        <MenuItem value={9999}>すべて（重いかも）</MenuItem>
                     </Select>
                 </FormControl>
 
