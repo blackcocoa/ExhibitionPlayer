@@ -1,4 +1,4 @@
-import Scraper from './circle/M32022AutumnScraper'
+import Scraper from './circle/M32023SpringScraper'
 import { TwitterClient, RateLimitError } from './sns/TwitterClient'
 import { Log } from './debug/Log'
 import { CircleList } from './db/CircleList'
