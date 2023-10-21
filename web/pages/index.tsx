@@ -32,6 +32,14 @@ const Index: NextPage<Props> = ({ exhibitions }) => {
                 <i>即売会参加サークルをサクっと横断視聴</i>
             </h1>
 
+            <strong>
+                「同人音楽小まとめ」はTwitter API有料化に伴い閉鎖の方針です。ご相談等は
+                <a href="https://twitter.com/sakusabedragon" target="_blank">
+                    管理者のアカウント
+                </a>
+                へどうぞ。
+            </strong>
+
             <section>
                 <h2>掲載中のイベント</h2>
                 <ul>
